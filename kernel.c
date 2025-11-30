@@ -47,10 +47,15 @@ void write(String str) {
     for (size_t i = 0; i < str.length; i++) {
         u8 character = str.base[i];
 
-        VideoMemory *cell = &video_memory[y * VIDEO_MEMORY_W + x];
-        cell->character = character;
-        cell->color = FG_WHITE;
-        x++;
+        if (character == '\n') {
+            x = 0;
+            y++;
+        } else {
+            VideoMemory *cell = &video_memory[y * VIDEO_MEMORY_W + x];
+            cell->character = character;
+            cell->color = FG_WHITE;
+            x++;
+        }
 
         if (x == VIDEO_MEMORY_W) {
             x = 0;
@@ -64,5 +69,5 @@ void write(String str) {
 }
 
 void run() {
-    write((String) {.base = (u8 *)"Hello, world!", .length = 13});
+    write((String) {.base = (u8 *)"Hello, world!\nHello from Leper OS!", .length = 34});
 }
