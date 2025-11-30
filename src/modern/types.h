@@ -13,5 +13,7 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
-typedef u32 size_t;
+typedef u32 address;
+
+#define null 0
 

@@ -46,7 +46,7 @@ u8 y = 0;
 void vga_write(String str, vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
-    for (size_t i = 0; i < str.length; i++) {
+    for (address i = 0; i < str.length; i++) {
         u8 character = str.base[i];
 
         if (character == '\n') {
@@ -76,7 +76,7 @@ void vga_write(String str, vga_Color color) {
 void vga_clear(vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
-    for (size_t i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {
+    for (address i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {
         video_memory[i] = (vga_Cell) {.character = ' ', .color = color};
     }
 }

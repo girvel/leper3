@@ -9,6 +9,7 @@ int main() {
 
 #include "modern/string.h"
 #include "modern/types.h"
+#include "heap.c"
 #include "vga.c"
 
 static inline u8 io_read_byte(u16 port) {
@@ -47,12 +48,27 @@ void run() {
 
     vga_Color terminal = vga_Color_bg_blue | vga_Color_fg_white;
     vga_write(LITERAL("Leper OS 3.0.0-alpha.1\n"), terminal);
-    vga_write(LITERAL("> "), terminal);
-
-    while (true) {
-        u8 key = kb_read();
-        if (key != 0) {
-            vga_write((String) {.base = &key, .length = 1}, terminal);
-        }
+    
+    String str = (String) {.base = heap_allocate(128), .length = 128};  // TODO fat pointers always?
+    for (address i = 0; i < str.length; i++) {
+        str.base[i] = 'A';
     }
+    vga_write(str, terminal);
+    vga_write(LITERAL("\n"), terminal);
+
+    String str2 = (String) {.base = heap_allocate(128), .length = 128};  // TODO fat pointers always?
+    if (str2.base == null) {
+        vga_write(LITERAL("It's null!\n"), terminal);
+    }
+
+    // vga_write(LITERAL("> "), terminal);
+
+    // while (true) {
+    //     u8 key = kb_read();
+    //     if (key != 0) {
+    //         vga_write((String) {.base = &key, .length = 1}, terminal);
+    //     }
+    // }
+
+    vga_write(LITERAL("Finished.\n"), terminal);
 }
