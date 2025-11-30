@@ -42,7 +42,7 @@ typedef enum {
 u8 x = 0;
 u8 y = 0;
 
-void write(String str, vga_Color color) {
+void vga_write(String str, vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
     for (size_t i = 0; i < str.length; i++) {
@@ -69,7 +69,7 @@ void write(String str, vga_Color color) {
     }
 }
 
-void clear(vga_Color color) {
+void vga_clear(vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
     for (size_t i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {

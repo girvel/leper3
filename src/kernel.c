@@ -11,6 +11,6 @@ int main() {
 #include "vga.c"
 
 void run() {
-    clear(vga_Color_bg_blue);
-    write(LITERAL("Leper OS 3.0.0-alpha.1"), vga_Color_bg_blue | vga_Color_fg_white);
+    vga_clear(vga_Color_bg_blue);
+    vga_write(LITERAL("Leper OS 3.0.0-alpha.1"), vga_Color_bg_blue | vga_Color_fg_white);
 }
