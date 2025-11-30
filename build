@@ -7,5 +7,5 @@ local cmd = function(cmd, ...)
 end
 
 cmd("mkdir -p .build")
-cmd("nasm -f bin boot.asm -o boot.bin")
-cmd("qemu-system-x86_64 -drive format=raw,file=boot.bin")
+cmd("nasm -f bin boot.asm -o .build/boot.bin")
+cmd("qemu-system-x86_64 -drive format=raw,file=.build/boot.bin")
