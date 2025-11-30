@@ -1,5 +1,6 @@
 #include "modern/types.h"
 #include "modern/string.h"
+#include "modern/macros.h"
 
 typedef struct __attribute__((packed)) {
     u8 character;
@@ -51,6 +52,9 @@ void vga_write(String str, vga_Color color) {
         if (character == '\n') {
             x = 0;
             y++;
+        } else if (character == '\b') {
+            x = MAX2(0, x - 1);
+            video_memory[y * VGA_VIDEO_MEMORY_W + x].character = ' ';
         } else {
             vga_Cell *cell = &video_memory[y * VGA_VIDEO_MEMORY_W + x];
             cell->character = character;
