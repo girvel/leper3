@@ -25,16 +25,7 @@ start:
     mov dl, [BOOT_DRIVE]
     call disk_load
 
-    ; tricks to use video memory
-    mov ax, 0xb800
-    mov es, ax
-
-    mov dl, [ds:0x1000]
-    mov dh, 0x0f
-    mov [es:0], dx
-
-    ; hang
-    jmp $
+    call switch_to_pm
 
 ; --- FUNCTIONS ---
 
@@ -87,13 +78,80 @@ disk_error:
     mov si, DISK_ERROR_MSG
     call writeln
     jmp $ ; Hang locally
- 
+
+switch_to_pm:
+    cli
+
+    lgdt [gdt_descriptor]
+
+    mov eax, cr0
+    or eax, 0x1
+    mov cr0, eax
+
+    jmp CODE_SEG:init_pm
+
+[bits 32]
+init_pm:
+    ; update segment registers
+    mov ax, DATA_SEG
+    mov ds, ax
+    mov ss, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    ; move stack
+    mov ebp, 0x90000
+    mov esp, ebp
+
+    ; call entrypoint
+    call begin_pm
+
+begin_pm:
+    mov byte [0xb8000], 'P'
+    mov byte [0xb8001], 0x0f
+
+    jmp $
+
 ; --- VARIABLES ---
  
 BOOT_DRIVE: db 0
 DISK_ERROR_MSG: db "Disk read error!", 0
 DISK_READ_MSG: db "Disk read success.", 0
 BOOTLOADER_MSG: db "Bootloading...", 0
+
+; --- GDT ---
+
+gdt_start:
+
+gdt_null:
+    dd 0x0
+    dd 0x0
+
+gdt_code: ; Base=0, Limit=4GB, overlapping code and data
+    dw 0xffff
+    dw 0x0
+    db 0x0
+    db 10011010b
+    db 11001111b
+    db 0x0
+
+gdt_data:
+    dw 0xffff
+    dw 0x0
+    db 0x0
+    db 10010010b
+    db 11001111b
+    db 0x0
+
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1
+    dd gdt_start
+
+CODE_SEG equ gdt_code - gdt_start
+DATA_SEG equ gdt_data - gdt_start
 
 ; --- PADDING ---
 
