@@ -26,6 +26,8 @@ typedef struct {
     size_t length;
 } String;
 
+#define LITERAL(C_STRING) ((String) {.base = (u8 *)(C_STRING), .length = sizeof((C_STRING))})
+
 typedef struct {
     u8 character;
     u8 color;
@@ -69,5 +71,5 @@ void write(String str) {
 }
 
 void run() {
-    write((String) {.base = (u8 *)"Hello, world!\nHello from Leper OS!", .length = 34});
+    write(LITERAL("Hello, world!\nHello from Leper OS!"));
 }
