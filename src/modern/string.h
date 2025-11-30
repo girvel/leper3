@@ -7,5 +7,5 @@ typedef struct {
     size_t length;
 } String;
 
-#define LITERAL(C_STRING) ((String) {.base = (u8 *)(C_STRING), .length = sizeof((C_STRING))})
+#define LITERAL(C_STRING) ((String) {.base = (u8 *)(C_STRING), .length = sizeof((C_STRING)) - 1})
 

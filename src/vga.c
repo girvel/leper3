@@ -1,10 +1,10 @@
 #include "modern/types.h"
 #include "modern/string.h"
 
-typedef struct {
+typedef struct __attribute__((packed)) {
     u8 character;
     u8 color;
-} __attribute__((packed)) vga_Cell;
+} vga_Cell;
 
 #define VGA_VIDEO_MEMORY_ADDRESS 0xb8000
 #define VGA_VIDEO_MEMORY_W 80
