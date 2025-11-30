@@ -15,5 +15,11 @@ typedef int64_t i64;
 
 typedef u32 address;
 
-#define null 0
+typedef struct {
+    void *base;
+    address length;
+} Fat;
+
+#define null ((Fat) {0})
+#define is_null(X) ((X).base == 0)
 

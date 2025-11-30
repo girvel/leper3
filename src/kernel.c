@@ -49,15 +49,15 @@ void run() {
     vga_Color terminal = vga_Color_bg_blue | vga_Color_fg_white;
     vga_write(LITERAL("Leper OS 3.0.0-alpha.1\n"), terminal);
     
-    String str = (String) {.base = heap_allocate(128), .length = 128};  // TODO fat pointers always?
+    String str = heap_allocate(String, 128);
     for (address i = 0; i < str.length; i++) {
         str.base[i] = 'A';
     }
     vga_write(str, terminal);
     vga_write(LITERAL("\n"), terminal);
 
-    String str2 = (String) {.base = heap_allocate(128), .length = 128};  // TODO fat pointers always?
-    if (str2.base == null) {
+    String str2 = heap_allocate(String, 128);
+    if (is_null(str2)) {
         vga_write(LITERAL("It's null!\n"), terminal);
     }
 

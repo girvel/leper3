@@ -13,36 +13,36 @@ address heap_records_length = 0;
 #define HEAP_SIZE 128
 u8 heap[HEAP_SIZE];
 
-void *heap_allocate(address size) {
-    if (size == 0 || heap_records_length + 1 == HEAP_RECORDS_CAPACITY) {
-        return null;
+void *heap_allocate_raw(address length) {
+    if (length == 0 || heap_records_length + 1 == HEAP_RECORDS_CAPACITY) {
+        return 0;
     }
 
     u8 *result = heap;
     heap_Record *current = heap_records;
     while (true) {
-        if (current->address - result >= size) {
+        if (current->address - result >= length) {
             goto found;
         }
 
         result = current->address + current->length;
 
-        if (current->next == null) {
-            return null;
+        if (current->next == 0) {
+            return 0;
         }
 
         current = current->next;
     }
 
-    if (heap + HEAP_SIZE - result >= size) {
+    if (heap + HEAP_SIZE - result >= length) {
         goto found;
     }
 
 found:
     heap_records[heap_records_length] = (heap_Record) {
         .address = result,
-        .next = null,
-        .length = size,
+        .next = 0,
+        .length = length,
     };
     if (heap_records_length > 0) {
         current->next = heap_records + heap_records_length;
@@ -51,5 +51,11 @@ found:
 
     return result;
 }
+
+#define heap_allocate(TYPE, LENGTH) ({ \
+    __typeof__ (LENGTH) __length = (LENGTH); \
+    void *base = heap_allocate_raw(__length); \
+    (TYPE) {.base = base, .length = __length}; \
+})
 
 void heap_free(void *base) {}
