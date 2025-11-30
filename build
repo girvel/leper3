@@ -1,0 +1,11 @@
+#!/usr/bin/env luajit
+
+--- @param cmd string
+--- @param ... any
+local cmd = function(cmd, ...)
+  os.execute(cmd:format(...))
+end
+
+cmd("mkdir -p .build")
+cmd("nasm -f bin boot.asm -o boot.bin")
+cmd("qemu-system-x86_64 -drive format=raw,file=boot.bin")
