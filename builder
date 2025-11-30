@@ -3,7 +3,15 @@
 --- @param cmd string
 --- @param ... any
 local cmd = function(cmd, ...)
-  os.execute(cmd:format(...))
+  cmd = cmd:format(...)
+
+  print("[CMD]", cmd)
+  local code = os.execute(cmd)
+
+  if code ~= 0 then
+    print("[ERROR] Exited with code", code)
+    os.exit(1)
+  end
 end
 
 cmd("mkdir -p .build")
