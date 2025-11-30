@@ -108,8 +108,7 @@ init_pm:
     call begin_pm
 
 begin_pm:
-    mov byte [0xb8000], 'P'
-    mov byte [0xb8001], 0x0f
+    call 0x1000
 
     jmp $
 
@@ -119,6 +118,7 @@ BOOT_DRIVE: db 0
 DISK_ERROR_MSG: db "Disk read error!", 0
 DISK_READ_MSG: db "Disk read success.", 0
 BOOTLOADER_MSG: db "Bootloading...", 0
+KERNEL_EXITED_MSG: db "Kernel finished.", 0
 
 ; --- GDT ---
 
