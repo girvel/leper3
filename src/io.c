@@ -6,3 +6,7 @@ static inline u8 io_read_byte(u16 port) {
     return result;
 }
 
+static inline void io_write_byte(u16 port, u8 data) {
+    __asm__ volatile("outb %0, %1" : : "a"(data), "Nd"(port));
+}
+

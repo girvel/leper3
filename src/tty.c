@@ -29,6 +29,8 @@ void tty_draw_bg() {
         left->character = 0xBA;
         right->character = 0xBA;
     }
+
+    vga_cursor_disable();
 }
 
 void tty_write(String str) {

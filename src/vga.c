@@ -1,5 +1,6 @@
 #include "modern/integer.h"
 #include "modern/string.h"
+#include "io.c"
 
 typedef struct __attribute__((packed)) {
     u8 character;
@@ -51,8 +52,6 @@ vga_Cell *vga_cell(u8_2 position) {
 }
 
 void vga_write(u8_2 position, String str, vga_Color color) {
-    vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
-
     u8_2 current_position = position;
     foreach (u8 *, character, &str) {
         if (*character == '\n') {
@@ -73,4 +72,22 @@ void vga_clear(vga_Color color) {
     for (address i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {
         video_memory[i] = (vga_Cell) {.character = ' ', .color = color};
     }
+}
+
+void vga_move_cursor(u8_2 pos) {
+    u16 index = pos.y * VGA_VIDEO_MEMORY_W + pos.x;
+
+    // send low byte
+    io_write_byte(0x3D4, 0x0F);
+    io_write_byte(0x3D5, (u8) (index & 0xFF));
+
+    // send high byte
+    io_write_byte(0x3D4, 0x0E);
+    io_write_byte(0x3D5, (u8) ((index >> 8) & 0xFF));
+}
+
+void vga_cursor_disable() {
+    io_write_byte(0x3D4, 0x0A);
+    u8 val = io_read_byte(0x3D5);
+    io_write_byte(0x3D5, val | 0x20);
 }
