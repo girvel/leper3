@@ -20,6 +20,6 @@ void run() {
         buffer.size = 0;
         tty_write(literal("\n> "));
         tty_read_line(&buffer);
-        tty_write((String) {.base = buffer.base, .length = buffer.size});
+        tty_write(slice(String, buffer));
     }
 }

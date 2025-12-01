@@ -21,3 +21,8 @@ typedef struct {
 
 #define foreach(TYPE, VARNAME, TARGET) \
     for (TYPE VARNAME = (TARGET)->base; VARNAME < (TARGET)->base + (TARGET)->length; VARNAME++)
+
+#define slice(SLICE_TYPE, X) ({ \
+    __typeof__ (X) __x = (X); \
+    (SLICE_TYPE) {.base = __x.base, .length = __x.size}; \
+})
