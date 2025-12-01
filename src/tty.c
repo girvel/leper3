@@ -51,23 +51,30 @@ void tty_write(String str) {
     vga_cursor_move(pos);
 }
 
-void tty_read_line(DynamicString *result) {
+typedef struct {
+    u8 end;
+} tty_read_Options;
+
+void tty_read_(DynamicString *result, tty_read_Options opts) {
     vga_cursor(true);
     while (true) {
         u8 character = kb_read();
         if (character == 0) continue;
 
         tty_write((String) {.base = &character, .length = 1});
-        if (character == '\n') break;
+        if (character == opts.end) break;
 
         result->base[result->size] = character;
         result->size++;
 
-        if (result->size == result->length) break;
+        if (result->size == result->length) {
+            if (opts.end != 0) tty_write((String) {.base = &opts.end, .length = 1});
+            break;
+        }
     }
     vga_cursor(false);
-
-    // TODO cursor
 }
+
+#define tty_read(RESULT, ...) tty_read_((RESULT), (tty_read_Options) {__VA_ARGS__})
 
 // TODO scroll + struct

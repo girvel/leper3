@@ -19,7 +19,7 @@ void run() {
     while (true) {
         buffer.size = 0;
         tty_write(literal("\n> "));
-        tty_read_line(&buffer);
+        tty_read(&buffer, .end = '\n');
         tty_write(slice(String, buffer));
     }
 }
