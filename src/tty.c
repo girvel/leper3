@@ -1,4 +1,5 @@
 #include "vga.c"
+#include "kb.c"
 #include "modern/integer.h"
 
 
@@ -30,7 +31,7 @@ void tty_draw_bg() {
         right->character = 0xBA;
     }
 
-    vga_cursor_disable();
+    vga_cursor(false);
 }
 
 void tty_write(String str) {
@@ -49,6 +50,27 @@ void tty_write(String str) {
     }
 }
 
-// TODO reading input
-// TODO move cursor
+address tty_read_line(String *result) {
+    address size = 0;
+
+    while (true) {
+        u8 character = kb_read();
+        if (character == 0) continue;
+
+        tty_write((String) {.base = &character, .length = 1});
+        if (character == '\n') break;
+
+        result->base[size] = character;
+        size++;
+
+        if (size == result->length) break;
+    }
+
+    return size;
+
+    // TODO cursor
+    // TODO DynamicString
+    // TODO single(String, &character)?
+}
+
 // TODO scroll + struct

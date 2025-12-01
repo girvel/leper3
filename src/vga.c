@@ -74,7 +74,7 @@ void vga_clear(vga_Color color) {
     }
 }
 
-void vga_move_cursor(u8_2 pos) {
+void vga_cursor_move(u8_2 pos) {
     u16 index = pos.y * VGA_VIDEO_MEMORY_W + pos.x;
 
     // send low byte
@@ -86,8 +86,8 @@ void vga_move_cursor(u8_2 pos) {
     io_write_byte(0x3D5, (u8) ((index >> 8) & 0xFF));
 }
 
-void vga_cursor_disable() {
+void vga_cursor(bool enable) {
     io_write_byte(0x3D4, 0x0A);
     u8 val = io_read_byte(0x3D5);
-    io_write_byte(0x3D5, val | 0x20);
+    io_write_byte(0x3D5, enable ? val & ~0x20 : val | 0x20);
 }

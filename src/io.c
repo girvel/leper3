@@ -1,3 +1,5 @@
+#pragma once
+
 #include "modern/integer.h"
 
 static inline u8 io_read_byte(u16 port) {
