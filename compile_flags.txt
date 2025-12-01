@@ -1,0 +1,7 @@
+-xc
+-std=c17
+-m32
+-ffreestanding
+-fno-builtin
+-Wall
+-Isrc
