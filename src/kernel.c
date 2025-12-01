@@ -13,43 +13,29 @@ int main() {
 #include "vga.c"
 #include "kb.c"
 
-// TODO static region
-u8 __region_base[128];
-const Fat region = {.length = 128, .base = __region_base};
-
 void run() {
-    vga_clear(vga_Color_bg_blue);
+    vga_clear(vga_Color_bg_blue | vga_Color_fg_white);
 
     vga_Color terminal = vga_Color_bg_blue | vga_Color_fg_white;
-    vga_write(LITERAL("Leper OS 3.0.0-alpha.1\n"), terminal);
-
-    Arena a = arena_new(region);
-    String str = arena_allocate(String, &a, 128);
-    for (address i = 0; i < str.length; i++) {
-        str.base[i] = 'A';
-    }
-    vga_write(str, terminal);
-    vga_write(LITERAL("\n"), terminal);
-
-    String str2 = arena_allocate(String, &a, 128);
-    if (is_null(str2)) {
-        vga_write(LITERAL("It's null!\n"), terminal);
-    }
-
-    a.length = 0;
-    str2 = arena_allocate(String, &a, 128);
-    if (!is_null(str2)) {
-        vga_write(LITERAL("It's not null!\n"), terminal);
-    }
-    
-    vga_write(LITERAL("> "), terminal);
-
-    while (true) {
-        u8 key = kb_read();
-        if (key != 0) {
-            vga_write((String) {.base = &key, .length = 1}, terminal);
+    for (u8 x = 0; x < VGA_VIDEO_MEMORY_W; x++) {
+        vga_Cell *upper = vga_cell((u8_2) {x, 0});
+        vga_Cell *lower = vga_cell((u8_2) {x, VGA_VIDEO_MEMORY_H - 1});
+        if (x == 0) {
+            upper->character = 0xC9;
+            lower->character = 0xC8;
+        } else if (x == VGA_VIDEO_MEMORY_W - 1) {
+            upper->character = 0xBB;
+            lower->character = 0xBC;
+        } else {
+            upper->character = 0xCD;
+            lower->character = 0xCD;
         }
     }
-
-    vga_write(LITERAL("Finished.\n"), terminal);
+    for (u8 y = 1; y < VGA_VIDEO_MEMORY_H - 1; y++) {
+        vga_Cell *left = vga_cell((u8_2) {0, y});
+        vga_Cell *right = vga_cell((u8_2) {VGA_VIDEO_MEMORY_W - 1, y});
+        left->character = 0xBA;
+        right->character = 0xBA;
+    }
+    vga_write((u8_2) {2, 1}, LITERAL("Leper OS 3.0.0-alpha.1\n"), terminal);
 }

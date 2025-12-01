@@ -40,35 +40,30 @@ typedef enum {
     vga_Color_blink = 0x80
 } __attribute__((packed)) vga_Color;
 
-u8 x = 0;
-u8 y = 0;
+vga_Cell no_cell;
 
-void vga_write(String str, vga_Color color) {
+vga_Cell *vga_cell(u8_2 position) {
+    if (position.x < VGA_VIDEO_MEMORY_W && position.y < VGA_VIDEO_MEMORY_H) {
+        vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
+        return video_memory + position.y * VGA_VIDEO_MEMORY_W + position.x;
+    }
+
+    return &no_cell;
+}
+
+void vga_write(u8_2 position, String str, vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
-    for (address i = 0; i < str.length; i++) {
-        u8 character = str.base[i];
-
-        if (character == '\n') {
-            x = 0;
-            y++;
-        } else if (character == '\b') {
-            x = MAX2(0, x - 1);
-            video_memory[y * VGA_VIDEO_MEMORY_W + x].character = ' ';
+    u8_2 current_position = position;
+    for (u8 *character = str.base; character < str.base + str.length; character++) {
+        if (*character == '\n') {
+            current_position.x = position.x;
+            current_position.y++;
         } else {
-            vga_Cell *cell = &video_memory[y * VGA_VIDEO_MEMORY_W + x];
-            cell->character = character;
+            vga_Cell *cell = vga_cell(current_position);
+            cell->character = *character;
             cell->color = color;
-            x++;
-        }
-
-        if (x == VGA_VIDEO_MEMORY_W) {
-            x = 0;
-            if (y == VGA_VIDEO_MEMORY_H) {
-                y = 0;
-            } else {
-                y++;
-            }
+            current_position.x++;
         }
     }
 }
