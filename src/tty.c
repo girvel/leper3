@@ -48,9 +48,11 @@ void tty_write(String str) {
             }
         }
     }
+    vga_cursor_move(pos);
 }
 
 void tty_read_line(DynamicString *result) {
+    vga_cursor(true);
     while (true) {
         u8 character = kb_read();
         if (character == 0) continue;
@@ -63,6 +65,7 @@ void tty_read_line(DynamicString *result) {
 
         if (result->size == result->length) break;
     }
+    vga_cursor(false);
 
     // TODO cursor
 }
