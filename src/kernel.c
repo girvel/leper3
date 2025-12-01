@@ -20,6 +20,12 @@ void run() {
         buffer.size = 0;
         tty_write(literal("\n> "));
         tty_read(&buffer, .end = '\n');
-        tty_write(slice(String, buffer));
+
+        String cmd = slice(String, buffer);
+        if (string_equal(string_sub(cmd, 0, 4), literal("echo"))) {
+            tty_write(string_sub(cmd, 5, cmd.length));
+        } else {
+            tty_write(literal("Unknown command"));
+        }
     }
 }
