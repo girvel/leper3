@@ -39,6 +39,14 @@ void tty_write(String str) {
         if (*character == '\n') {
             pos.x = 2;
             pos.y++;
+        } else if (*character == '\b') {
+            if (pos.x == 2) {
+                pos.x = VGA_VIDEO_MEMORY_W - 5;
+                pos.y = MAX2(1, pos.y - 1);
+            } else {
+                pos.x--;
+            }
+            vga_cell(pos)->character = ' ';
         } else {
             vga_cell(pos)->character = *character;
             pos.x++;
@@ -60,6 +68,13 @@ void tty_read_(DynamicString *result, tty_read_Options opts) {
     while (true) {
         u8 character = kb_read();
         if (character == 0) continue;
+        if (character == '\b') {
+            if (result->size > 0) {
+                result->size--;
+                tty_write((String) {.base = &character, .length = 1});
+            }
+            continue;
+        }
 
         tty_write((String) {.base = &character, .length = 1});
         if (character == opts.end) break;
