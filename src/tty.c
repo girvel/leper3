@@ -50,9 +50,7 @@ void tty_write(String str) {
     }
 }
 
-address tty_read_line(String *result) {
-    address size = 0;
-
+void tty_read_line(DynamicString *result) {
     while (true) {
         u8 character = kb_read();
         if (character == 0) continue;
@@ -60,17 +58,13 @@ address tty_read_line(String *result) {
         tty_write((String) {.base = &character, .length = 1});
         if (character == '\n') break;
 
-        result->base[size] = character;
-        size++;
+        result->base[result->size] = character;
+        result->size++;
 
-        if (size == result->length) break;
+        if (result->size == result->length) break;
     }
 
-    return size;
-
     // TODO cursor
-    // TODO DynamicString
-    // TODO single(String, &character)?
 }
 
 // TODO scroll + struct
