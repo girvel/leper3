@@ -1,3 +1,5 @@
+// DEVELOPMENT FROZEN, DO NOT USE
+
 #include "modern/types.h"
 
 typedef struct heap_Record {
@@ -44,11 +46,13 @@ found:
         .next = 0,
         .length = length,
     };
+
     if (heap_records_length > 0) {
+        // TODO preserve order
         current->next = heap_records + heap_records_length;
     }
-    heap_records_length++;
 
+    heap_records_length++;
     return result;
 }
 
@@ -58,4 +62,4 @@ found:
     (TYPE) {.base = base, .length = __length}; \
 })
 
-void heap_free(void *base) {}
+void heap_free_raw(void *base) {}

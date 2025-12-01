@@ -9,7 +9,7 @@ int main() {
 
 #include "modern/string.h"
 #include "modern/types.h"
-#include "heap.c"
+#include "arena.c"
 #include "vga.c"
 
 static inline u8 io_read_byte(u16 port) {
@@ -43,24 +43,35 @@ u8 kb_read() {
     return kb_scancode_map[scancode];
 }
 
+// TODO static region
+u8 __region_base[128];
+const Fat region = {.length = 128, .base = __region_base};
+
 void run() {
     vga_clear(vga_Color_bg_blue);
 
     vga_Color terminal = vga_Color_bg_blue | vga_Color_fg_white;
     vga_write(LITERAL("Leper OS 3.0.0-alpha.1\n"), terminal);
-    
-    String str = heap_allocate(String, 128);
+
+    Arena a = arena_new(region);
+    String str = arena_allocate(String, &a, 128);
     for (address i = 0; i < str.length; i++) {
         str.base[i] = 'A';
     }
     vga_write(str, terminal);
     vga_write(LITERAL("\n"), terminal);
 
-    String str2 = heap_allocate(String, 128);
+    String str2 = arena_allocate(String, &a, 128);
     if (is_null(str2)) {
         vga_write(LITERAL("It's null!\n"), terminal);
     }
 
+    a.length = 0;
+    str2 = arena_allocate(String, &a, 128);
+    if (!is_null(str2)) {
+        vga_write(LITERAL("It's not null!\n"), terminal);
+    }
+    
     // vga_write(LITERAL("> "), terminal);
 
     // while (true) {
