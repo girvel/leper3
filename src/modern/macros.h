@@ -20,4 +20,3 @@
 
 #define _concat4(A, B, C, D) A##B##C##D
 #define concat4(A, B, C, D) _concat4(A, B, C, D)
-

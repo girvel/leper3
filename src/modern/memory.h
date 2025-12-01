@@ -16,3 +16,6 @@ typedef struct {
 #define static_region(NAME, LENGTH) \
     u8 concat3(__, NAME, _base)[LENGTH]; \
     Fat NAME = {.base = concat3(__, NAME, _base), .length = LENGTH};
+
+#define foreach(TYPE, VARNAME, TARGET) \
+    for (TYPE VARNAME = (TARGET)->base; VARNAME < (TARGET)->base + (TARGET)->length; VARNAME++)

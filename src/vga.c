@@ -1,6 +1,5 @@
 #include "modern/integer.h"
 #include "modern/string.h"
-#include "modern/macros.h"
 
 typedef struct __attribute__((packed)) {
     u8 character;
@@ -55,7 +54,7 @@ void vga_write(u8_2 position, String str, vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
     u8_2 current_position = position;
-    for (u8 *character = str.base; character < str.base + str.length; character++) {
+    foreach (u8 *, character, &str) {
         if (*character == '\n') {
             current_position.x = position.x;
             current_position.y++;
