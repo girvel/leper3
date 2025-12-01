@@ -1,4 +1,4 @@
-#include "modern/types.h"
+#include "modern/integer.h"
 #include "modern/string.h"
 #include "modern/macros.h"
 

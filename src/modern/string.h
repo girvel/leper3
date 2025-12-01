@@ -1,6 +1,7 @@
 #pragma once
 
-#include "types.h"
+#include "integer.h"
+#include "memory.h"
 
 typedef struct {
     u8 *base;

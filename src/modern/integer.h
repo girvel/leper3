@@ -13,13 +13,3 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
-typedef u32 address;
-
-typedef struct {
-    void *base;
-    address length;
-} Fat;
-
-#define null ((Fat) {0})
-#define is_null(X) ((X).base == 0)
-

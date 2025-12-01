@@ -8,7 +8,7 @@ int main() {
 }
 
 #include "modern/string.h"
-#include "modern/types.h"
+#include "modern/integer.h"
 #include "arena.c"
 #include "vga.c"
 

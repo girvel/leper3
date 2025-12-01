@@ -1,6 +1,7 @@
 // DEVELOPMENT FROZEN, DO NOT USE
 
-#include "modern/types.h"
+#include "modern/integer.h"
+#include "modern/memory.h"
 
 typedef struct heap_Record {
     u8 *address;
