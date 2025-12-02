@@ -1,3 +1,5 @@
+#pragma once
+
 #include "vga.c"
 #include "kb.c"
 #include "modern/integer.h"
