@@ -11,6 +11,7 @@ int main() {
 #include "heap.c"
 #include "cmd.c"
 #include "idt.c"
+#include "vmm.c"
 #include "modern/string.h"
 #include "modern/memory.h"
 #include "modern/allocator.h"
@@ -20,7 +21,9 @@ int main() {
 // - use page memory
 
 void run() {
+    page_init();
     idt_init();
+    vmm_init();
     heap_init();
     Allocator heap = heap_get_allocator();
 

@@ -77,6 +77,7 @@ String _idt_interrupt_names_base[15] = {
     literal("<unknown>"),
     literal("<unknown>"),
     literal("<unknown>"),
+    literal("<unknown>"),
     literal("General Protection Fault: Permission violations"),
     literal("Page Fault: Attempting to access invalid memory"),
 };
@@ -90,7 +91,7 @@ void idt_handler(isr_Registers *registers) {
 
     vga_Color red = vga_Color_bg_red | vga_Color_fg_white;
     vga_clear(red);
-    vga_write((u8_2) {2, 1}, literal("Leper OS crashed"), red);
+    vga_write((u8_2) {2, 1}, literal("RED DEATH SCREEN"), red);
 
     DynamicString report = {0};
     string_format(
