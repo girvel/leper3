@@ -1,6 +1,33 @@
 bits 16  ; 16-bit mode
 org 0x7c00  ; bootloader address
 
+jmp short start
+nop
+
+; --- FAKE BIOS PARAMETER BLOCK (BPB) ---
+; This tricks the BIOS into thinking this is a valid FAT12 filesystem.
+; Without this, some BIOSes (like VAIO) reject the USB stick.
+
+oem_name:           db "MSWIN4.1"   ; 8 bytes
+bytes_per_sector:   dw 512
+sectors_per_cluster:db 1
+reserved_sectors:   dw 1
+num_fats:           db 2
+root_dir_entries:   dw 224
+total_sectors_short:dw 2880
+media_descriptor:   db 0xf0
+sectors_per_fat:    dw 9
+sectors_per_track:  dw 18
+num_heads:          dw 2
+hidden_sectors:     dd 0
+total_sectors_long: dd 0
+drive_number:       db 0x80         ; 0x00 for floppy, 0x80 for HDD
+reserved:           db 0
+signature:          db 0x29
+vol_id:             dd 0x12345678
+vol_label:          db "LEPEROS    "; 11 bytes
+fs_type:            db "FAT12   "   ; 8 bytes
+
 start:
     mov [BOOT_DRIVE], dl
 
@@ -152,6 +179,24 @@ gdt_descriptor:
 
 CODE_SEG equ gdt_code - gdt_start
 DATA_SEG equ gdt_data - gdt_start
+
+; --- MBR PARTITION TABLE HACK ---
+
+; 1. Check if we have space. 
+%if ($ - $$) > 446
+    %error "Bootloader is too big! It must be < 446 bytes to fit a Partition Table."
+%endif
+
+; 2. Pad exactly up to the partition table area
+times 446-($-$$) db 0
+
+; 3. Fake Partition Entry #1 (Marked Active)
+db 0x80       ; Bit 7 set = Bootable / Active
+db 0, 0, 0    ; CHS Start (unused by modern BIOS)
+db 0          ; Partition Type (0 = Empty, but 0x80 status is what matters)
+db 0, 0, 0    ; CHS End
+dd 0          ; LBA Start
+dd 0          ; LBA Length
 
 ; --- PADDING ---
 
