@@ -64,11 +64,11 @@ StringArray string_split(String target, Allocator *allocator, u8 separator) {
         if (*character == ' ') {
             push = true;
         } else {
-            da_append(&current_word, allocator, *character);
+            append(&current_word, allocator, *character);
         }
 
         if (current_word.size > 0 && (push || i == target.length - 1)) {
-            da_append(&result, allocator, slice(String, current_word));
+            append(&result, allocator, slice(String, current_word));
             current_word = (DynamicString) {0};
         }
     }
@@ -80,14 +80,14 @@ u8 _string_digits[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 void string_write_signed(DynamicString *target, Allocator *allocator, i32 integer) {
     if (integer < 0) {
-        da_append(target, allocator, '-');
+        append(target, allocator, '-');
     }
     address start = target->size;
 
     do {
         u8 n = integer % 10;
         integer /= 10;
-        da_append(target, allocator, _string_digits[n]);
+        append(target, allocator, _string_digits[n]);
     } while (integer != 0);
 
     for (address i = start; i < (start + target->size) / 2; i++) {

@@ -37,18 +37,18 @@ void _date(StringArray args) {
     clock_Time time = clock_read();
 
     DynamicString result = {0};
-    da_append(&result, &heap, '2');
-    da_append(&result, &heap, '0');
+    append(&result, &heap, '2');
+    append(&result, &heap, '0');
     string_write_signed(&result, &heap, time.year);
-    da_append(&result, &heap, '-');
+    append(&result, &heap, '-');
     string_write_signed(&result, &heap, time.month);
-    da_append(&result, &heap, '-');
+    append(&result, &heap, '-');
     string_write_signed(&result, &heap, time.day);
-    da_append(&result, &heap, ' ');
+    append(&result, &heap, ' ');
     string_write_signed(&result, &heap, time.hours);
-    da_append(&result, &heap, ':');
+    append(&result, &heap, ':');
     string_write_signed(&result, &heap, time.minutes);
-    da_append(&result, &heap, ':');
+    append(&result, &heap, ':');
     string_write_signed(&result, &heap, time.seconds);
 
     tty_write(slice(String, result));
