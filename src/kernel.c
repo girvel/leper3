@@ -8,7 +8,7 @@ int main() {
 }
 
 #include "tty.c"
-#include "arena.c"
+#include "heap.c"
 #include "modern/string.h"
 #include "modern/memory.h"
 #include "modern/allocator.h"
@@ -29,8 +29,16 @@ typedef struct {
 } StringArray;
 
 void run() {
+    heap_init();
+
     tty_draw_bg();
     tty_write(literal("Leper OS 3.0.0-alpha.1\n"));
+
+    // tty_write(literal("# # #    #    #### #### #### ####       ###  ###    # # #\n"));
+    // tty_write(literal(" # #     #    #    #  # #    #  #      #  # #        # # \n"));
+    // tty_write(literal("# # #    #    #### #  # #### #  #      #  # ####    # # #\n"));
+    // tty_write(literal(" # #     #    #    ###  #    ###       #  #    #     # # \n"));
+    // tty_write(literal("# # #    #### #### #    #### #  #      ###  ###     # # #\n"));
 
     static_region(DynamicString, cmd_buffer, 128);
 
@@ -43,11 +51,9 @@ void run() {
         if (string_equal(string_sub(cmd, 0, 4), literal("echo"))) {
             tty_write(string_sub(cmd, 5, cmd.length));
         } else if (string_starts_with(cmd, literal("split"))) {
-            static_region(String, page, 512);
-            Arena _arena = fat_cast(Arena, page);
-            Allocator arena = arena_get_allocator(&_arena);
+            Allocator heap = heap_get_allocator();
 
-            Strings result = allocate(Strings, &arena, null, 128);
+            Strings result = allocate(Strings, &heap, null, 128);
             static_region(DynamicString, split_buffer, 128);
 
             foreach (u8 *, character, &cmd) {
@@ -61,7 +67,7 @@ void run() {
                 }
 
                 if (split_buffer.size > 0 && (push || character == cmd.base + cmd.length - 1)) {
-                    String next = allocate(String, &arena, null, split_buffer.size);
+                    String next = allocate(String, &heap, null, split_buffer.size);
                     copy(split_buffer, next);
                     result.base[result.size] = next;
                     result.size++;
