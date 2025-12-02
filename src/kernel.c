@@ -43,7 +43,11 @@ void run() {
         if (string_equal(cmd, literal("echo"))) {
             tty_write(string_sub(cmd_full, 5, cmd_full.length));
         } else if (string_equal(cmd, literal("split"))) {
-            enumerate (address, i, String *, word, &args) {
+            StringArray words = args;
+            words.base++;
+            words.length--;
+
+            enumerate (address, i, String *, word, &words) {
                 if (i > 0) tty_write(literal("\n"));
                 tty_write(*word);
             }
