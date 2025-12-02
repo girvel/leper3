@@ -23,6 +23,7 @@ cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 
 do
   local SECTOR_SIZE = 512
   local KERNEL_MAX_SIZE = 50 * SECTOR_SIZE
+  local NORMAL_SIZE = 10 * 1024 * 1024
 
   local leper3_bin = assert(io.open(".build/leper3.bin", "wb"))
     local boot_bin = assert(io.open(".build/boot.bin", "rb"))
@@ -42,6 +43,8 @@ do
 
     leper3_bin:write(content)
     leper3_bin:write(("\0"):rep(KERNEL_MAX_SIZE - #content))
+
+    leper3_bin:write(("\0"):rep(NORMAL_SIZE - KERNEL_MAX_SIZE))
   leper3_bin:close()
 end
 
