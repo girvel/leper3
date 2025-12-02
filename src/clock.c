@@ -23,7 +23,7 @@ clock_Time clock_read() {
     return (clock_Time) {
         _clock_read(0x00),
         _clock_read(0x02),
-        _clock_read(0x04),
+        _clock_read(0x04) + 5,
         _clock_read(0x07),
         _clock_read(0x08),
         _clock_read(0x09)
