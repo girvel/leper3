@@ -38,20 +38,7 @@ void _date(StringArray args) {
     clock_Time time = clock_read();
 
     DynamicString result = {0};
-    append_many(&result, &heap, literal("20"));
-    append(&result, &heap, '2');
-    append(&result, &heap, '0');
-    string_write_signed(&result, &heap, time.year);
-    append(&result, &heap, '-');
-    string_write_signed(&result, &heap, time.month);
-    append(&result, &heap, '-');
-    string_write_signed(&result, &heap, time.day);
-    append(&result, &heap, ' ');
-    string_write_signed(&result, &heap, time.hours);
-    append(&result, &heap, ':');
-    string_write_signed(&result, &heap, time.minutes);
-    append(&result, &heap, ':');
-    string_write_signed(&result, &heap, time.seconds);
+    string_format(&result, &heap, literal("20%i-%i-%i %i:%i:%i"), time.year, time.month, time.day, time.hours, time.minutes, time.seconds);
 
     tty_write(to_fat(String, result));
     free(&heap, result);

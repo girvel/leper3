@@ -3,6 +3,7 @@
 #include "integer.h"
 #include "memory.h"
 #include "allocator.h"
+#include <stdarg.h>
 
 typedef struct {
     u8 *base;
@@ -95,5 +96,28 @@ void string_write_signed(DynamicString *target, Allocator *allocator, i32 intege
         u8 tmp = target->base[i];
         target->base[i] = target->base[j];
         target->base[j] = tmp;
+    }
+}
+
+void string_format(DynamicString *target, Allocator *allocator, String format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    bool is_formatting = false;
+    foreach (u8 *, character, &format) {
+        if (is_formatting) {
+            if (*character == '%') {
+                append(target, allocator, '%');
+            } else if (*character == 'i') {
+                string_write_signed(target, allocator, va_arg(args, i32));
+            }
+            is_formatting = false;
+        } else {
+            if (*character == '%') {
+                is_formatting = true;
+            } else {
+                append(target, allocator, *character);
+            }
+        }
     }
 }
