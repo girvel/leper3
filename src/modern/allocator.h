@@ -32,33 +32,35 @@ typedef struct {
             __typeof__ (*extend__fat), (ALLOCATOR), *extend__fat, (LENGTH) \
         ); \
         if (__new_array.base != extend__fat->base) { \
-            copy(*append__array, __new_array); \
-            append__array->base = __new_array.base; \
+            copy(*extend__fat, __new_array); \
+            extend__fat->base = __new_array.base; \
         } \
-        append__array->length = __new_array.length; \
+        extend__fat->length = __new_array.length; \
     } \
 } while (0)
 
 #define append(LIST, ALLOCATOR, ELEMENT) do { \
-    __typeof__ (LIST) append__array = (LIST); \
+    __typeof__ (LIST) append__list = (LIST); \
     __typeof__ (ALLOCATOR) append__allocator = (ALLOCATOR); \
     __typeof__ (ELEMENT) append__element = (ELEMENT); \
-    if (append__array->size >= append__array->length) { \
-        extend(append__array, append__allocator, append__array->length == 0 ? 16 : append__array->length * 2); \
+    if (append__list->size >= append__list->length) { \
+        extend(append__list, append__allocator, append__list->length == 0 ? 16 : append__list->length * 2); \
     } \
-    append__array->base[append__array->size++] = append__element; \
+    append__list->base[append__list->size++] = append__element; \
 } while (0)
 
-// #define da_extend(LIST, ALLOCATOR, ELEMENTS) do { \
-//     __typeof__ (LIST) da_extend__list = (LIST); \
-//     __typeof__ (ALLOCATOR) append__allocator = (ALLOCATOR); \
-//     __typeof__ (ELEMENTS) da_extend__elements = (ELEMENTS); \
-//     if (da_extend__list->size + da_extend__elements->length > da_extend__list->length) { \
-//         address new_length = MAX2(16, da_extend__list->length * 2); \
-//         while (da_extend__list->size + da_extend__elements->length > new_length) new_length *= 2; \
-//         __typeof__ (*da_extend__list) __new_list = allocate( \
-//             __typeof__ (*da_extend__list), da_extend__allocator, *da_extend_list, new_length \
-//         ); \
-//         copy(*da_extend__list, __new_list); \
-//         da_extend__list->base = __new_array
-// } while(0)
+#define append_many(LIST, ALLOCATOR, ELEMENTS) do { \
+    __typeof__ (LIST) append__list = (LIST); \
+    __typeof__ (ALLOCATOR) append__allocator = (ALLOCATOR); \
+    __typeof__ (ELEMENTS) append__elements = (ELEMENTS); \
+    if (append__list->size + append__elements.length > append__list->length) { \
+        address new_length = append__list->length == 0 ? 16 : append__list->length * 2; \
+        while (append__list->size + append__elements.length > new_length) new_length *= 2; \
+        extend(append__list, append__allocator, new_length); \
+    } \
+    __typeof__ (append__elements) append__destination = { \
+        .base = append__list->base + append__list->length, \
+        .length = append__elements.length \
+    }; \
+    copy(append__elements, append__destination); \
+} while (0)

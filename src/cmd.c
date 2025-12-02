@@ -37,6 +37,7 @@ void _date(StringArray args) {
     clock_Time time = clock_read();
 
     DynamicString result = {0};
+    append_many(&result, &heap, literal("20"));
     append(&result, &heap, '2');
     append(&result, &heap, '0');
     string_write_signed(&result, &heap, time.year);
