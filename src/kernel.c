@@ -10,6 +10,7 @@ int main() {
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"
+#include "idt.c"
 #include "modern/string.h"
 #include "modern/memory.h"
 #include "modern/allocator.h"
@@ -19,6 +20,7 @@ int main() {
 // - use page memory
 
 void run() {
+    idt_init();
     heap_init();
     Allocator heap = heap_get_allocator();
 

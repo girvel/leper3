@@ -48,6 +48,10 @@ void _reboot(StringArray args) {
     power_reboot();
 }
 
+void _div_by_zero(StringArray args) {
+    u8 _ = 1/0;
+}
+
 void _help(StringArray);
 
 typedef struct {
@@ -61,16 +65,17 @@ typedef struct {
     address length;
 } cmd_Entries;
 
-cmd_Entry cmd_entries_base[6] = {
+cmd_Entry cmd_entries_base[7] = {
     {literal("split"), _split, literal("")},
     {literal("echo"), _echo, literal("")},
     {literal("clear"), _clear, literal("")},
     {literal("date"), _date, literal("display date/time")},
     {literal("reboot"), _reboot, literal("")},
+    {literal("crash"), _div_by_zero, literal("divides 1/0")},
     {literal("help"), _help, literal("display help")},
 };
 
-cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 6};
+cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 7};
 
 void _help(StringArray args) {
     enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {

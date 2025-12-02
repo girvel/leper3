@@ -16,8 +16,9 @@ end
 
 cmd("mkdir -p .build")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")
+cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
 cmd("gcc -ffreestanding -m32 -fno-pie -c src/kernel.c -o .build/kernel.o")
-cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o")
+cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/isr.o")
 
 -- cmd("cat .build/boot.bin .build/kernel.bin > .build/leper3.bin")
 do
