@@ -2,6 +2,7 @@
 
 #include "integer.h"
 #include "memory.h"
+#include "allocator.h"
 
 typedef struct {
     u8 *base;
@@ -13,6 +14,17 @@ typedef struct {
     address length;
     address size;
 } DynamicString;
+
+typedef struct {
+    String *base;
+    address length;
+    address size;
+} Strings;
+
+typedef struct {
+    String *base;
+    address length;
+} StringArray;
 
 #define literal(C_STRING) ((String) {.base = (u8 *)(C_STRING), .length = sizeof((C_STRING)) - 1})
 
@@ -41,4 +53,25 @@ String string_sub(String a, address start, address end) {
 
 bool string_starts_with(String target, String prefix) {
     return string_equal(string_sub(target, 0, prefix.length), prefix);
+}
+
+StringArray string_split(String target, Allocator *allocator, u8 separator) {
+    Strings result = {0};
+    DynamicString current_word = {0};
+
+    enumerate (address, i, u8 *, character, &target) {
+        bool push = false;
+        if (*character == ' ') {
+            push = true;
+        } else {
+            da_append(&current_word, allocator, *character);
+        }
+
+        if (current_word.size > 0 && (push || i == target.length - 1)) {
+            da_append(&result, allocator, slice(String, current_word));
+            current_word = (DynamicString) {0};
+        }
+    }
+
+    return slice(StringArray, result);
 }
