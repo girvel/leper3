@@ -21,7 +21,7 @@ start:
 
     ; reading from disk
     mov bx, 0x1000
-    mov dh, 17
+    mov dh, 50
     mov dl, [BOOT_DRIVE]
     call disk_load
 

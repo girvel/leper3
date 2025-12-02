@@ -41,7 +41,7 @@ void *_heap_allocate_raw(void *payload, void *prev, address length) {
             if (current->size > length + sizeof(heap_Record)) {
                 heap_Record *new_record = (heap_Record *) ((u8 *)current + sizeof(heap_Record) + length);
 
-                new_record->size = current->size - sizeof(heap_Record);
+                new_record->size = current->size - length - sizeof(heap_Record);
                 new_record->is_free = true;
                 new_record->next = current->next;
 

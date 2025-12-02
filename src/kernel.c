@@ -28,6 +28,22 @@ typedef struct {
     address length;
 } StringArray;
 
+#define da_append(ARRAY, ALLOCATOR, ELEMENT) do { \
+    __typeof__ (ARRAY) da_append__array = (ARRAY); \
+    __typeof__ (ALLOCATOR) da_append__allocator = (ALLOCATOR); \
+    __typeof__ (ELEMENT) da_append__element = (ELEMENT); \
+    if (da_append__array->size >= da_append__array->length) { \
+        __typeof__ (*da_append__array) __new_array = allocate( \
+            __typeof__ (*da_append__array), da_append__allocator, *da_append__array, \
+            da_append__array->length == 0 ? 16 : da_append__array->length * 2 \
+        ); \
+        copy(*da_append__array, __new_array); \
+        da_append__array->base = __new_array.base; \
+        da_append__array->length = __new_array.length; \
+    } \
+    da_append__array->base[da_append__array->size++] = da_append__element; \
+} while (0)
+
 void run() {
     heap_init();
 
@@ -54,16 +70,14 @@ void run() {
             Allocator heap = heap_get_allocator();
 
             Strings result = allocate(Strings, &heap, null, 128);
-            static_region(DynamicString, split_buffer, 128);
+            DynamicString split_buffer = {0};
 
             foreach (u8 *, character, &cmd) {
                 bool push = false;
                 if (*character == ' ') {
                     push = true;
                 } else {
-                    split_buffer.base[split_buffer.size] = *character;
-                    // TODO handle overflow?
-                    split_buffer.size++;
+                    da_append(&split_buffer, &heap, *character);
                 }
 
                 if (split_buffer.size > 0 && (push || character == cmd.base + cmd.length - 1)) {
