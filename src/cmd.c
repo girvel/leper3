@@ -4,6 +4,7 @@
 #include "tty.c"
 #include "heap.c"
 #include "clock.c"
+#include "power.c"
 
 void _split(StringArray args) {
     StringArray words = args;
@@ -52,8 +53,12 @@ void _date(StringArray args) {
     append(&result, &heap, ':');
     string_write_signed(&result, &heap, time.seconds);
 
-    tty_write(slice(String, result));
+    tty_write(to_fat(String, result));
     free(&heap, result);
+}
+
+void _reboot(StringArray args) {
+    power_reboot();
 }
 
 void _help(StringArray);
@@ -69,15 +74,16 @@ typedef struct {
     address length;
 } cmd_Entries;
 
-cmd_Entry cmd_entries_base[5] = {
+cmd_Entry cmd_entries_base[6] = {
     {literal("split"), _split, literal("")},
     {literal("echo"), _echo, literal("")},
     {literal("clear"), _clear, literal("")},
     {literal("date"), _date, literal("display date/time")},
+    {literal("reboot"), _reboot, literal("")},
     {literal("help"), _help, literal("display help")},
 };
 
-cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 5};
+cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 6};
 
 void _help(StringArray args) {
     enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {

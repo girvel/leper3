@@ -38,7 +38,7 @@ void run() {
         tty_write(literal("\n> "));
         tty_read(&cmd_buffer, .end = '\n');
 
-        String cmd_full = slice(String, cmd_buffer);
+        String cmd_full = to_fat(String, cmd_buffer);
         StringArray args = string_split(cmd_full, &heap, ' ');
         String cmd = args.base[0];
 

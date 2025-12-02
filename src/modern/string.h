@@ -68,12 +68,12 @@ StringArray string_split(String target, Allocator *allocator, u8 separator) {
         }
 
         if (current_word.size > 0 && (push || i == target.length - 1)) {
-            append(&result, allocator, slice(String, current_word));
+            append(&result, allocator, to_fat(String, current_word));
             current_word = (DynamicString) {0};
         }
     }
 
-    return slice(StringArray, result);
+    return to_fat(StringArray, result);
 }
 
 u8 _string_digits[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
