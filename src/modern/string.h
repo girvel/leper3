@@ -103,21 +103,45 @@ void string_format(DynamicString *target, Allocator *allocator, String format, .
     va_list args;
     va_start(args, format);
 
-    bool is_formatting = false;
     foreach (u8 *, character, &format) {
-        if (is_formatting) {
+        if (*character == '%') {
+            character++;
+
             if (*character == '%') {
                 append(target, allocator, '%');
             } else if (*character == 'i') {
                 string_write_signed(target, allocator, va_arg(args, i32));
-            }
-            is_formatting = false;
-        } else {
-            if (*character == '%') {
-                is_formatting = true;
+            } else if (*character == '0') {
+                character++;
+                u32 padding = 0;
+                do {
+                    if (*character < '0' || *character > '9') {
+                        append(target, allocator, '^');
+                        continue;
+                    }
+
+                    padding *= 10;
+                    padding += *character - '0';
+                    character++;
+                } while (*character != 'i');
+
+                address size_before = target->size;
+                string_write_signed(target, allocator, va_arg(args, i32));
+                padding -= target->size - size_before;
+
+                extend(target, allocator, padding);
+                target->size += padding;
+                for (address i = size_before; i < size_before + padding; i++) {
+                    target->base[i + padding] = target->base[i];
+                    target->base[i] = '0';
+                }
             } else {
-                append(target, allocator, *character);
+                append(target, allocator, '^');
             }
+
+            continue;
         }
+
+        append(target, allocator, *character);
     }
 }

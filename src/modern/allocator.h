@@ -25,18 +25,26 @@ typedef struct {
 } while (0)
 
 // TODO stop passing the allocator by reference
-#define extend(FAT, ALLOCATOR, LENGTH) do { \
-    __typeof__ (FAT) extend__fat = (FAT); \
-    if (LENGTH > extend__fat->length) { \
-        __typeof__ (*extend__fat) __new_array = allocate( \
-            __typeof__ (*extend__fat), (ALLOCATOR), *extend__fat, (LENGTH) \
+#define extend_exact(FAT, ALLOCATOR, LENGTH) do { \
+    __typeof__ (FAT) extend_exact__fat = (FAT); \
+    if (LENGTH > extend_exact__fat->length) { \
+        __typeof__ (*extend_exact__fat) __new_array = allocate( \
+            __typeof__ (*extend_exact__fat), (ALLOCATOR), *extend_exact__fat, (LENGTH) \
         ); \
-        if (__new_array.base != extend__fat->base) { \
-            copy(*extend__fat, __new_array); \
-            extend__fat->base = __new_array.base; \
+        if (__new_array.base != extend_exact__fat->base) { \
+            copy(*extend_exact__fat, __new_array); \
+            extend_exact__fat->base = __new_array.base; \
         } \
-        extend__fat->length = __new_array.length; \
+        extend_exact__fat->length = __new_array.length; \
     } \
+} while (0)
+
+#define extend(FATTER, ALLOCATOR, LENGTH) do { \
+    __typeof__ (FATTER) extend__fatter = (FATTER); \
+    __typeof__ (LENGTH) extend__length = (LENGTH); \
+    address new_length = extend__fatter->length == 0 ? 16 : extend__fatter->length * 2; \
+    while (extend__fatter->size + extend__length > new_length) new_length *= 2; \
+    extend_exact(extend__fatter, (ALLOCATOR), new_length); \
 } while (0)
 
 #define append(LIST, ALLOCATOR, ELEMENT) do { \
@@ -44,7 +52,7 @@ typedef struct {
     __typeof__ (ALLOCATOR) append__allocator = (ALLOCATOR); \
     __typeof__ (ELEMENT) append__element = (ELEMENT); \
     if (append__list->size >= append__list->length) { \
-        extend(append__list, append__allocator, append__list->length == 0 ? 16 : append__list->length * 2); \
+        extend_exact(append__list, append__allocator, append__list->length == 0 ? 16 : append__list->length * 2); \
     } \
     append__list->base[append__list->size++] = append__element; \
 } while (0)
@@ -54,9 +62,7 @@ typedef struct {
     __typeof__ (ALLOCATOR) append__allocator = (ALLOCATOR); \
     __typeof__ (ELEMENTS) append__elements = (ELEMENTS); \
     if (append__list->size + append__elements.length > append__list->length) { \
-        address new_length = append__list->length == 0 ? 16 : append__list->length * 2; \
-        while (append__list->size + append__elements.length > new_length) new_length *= 2; \
-        extend(append__list, append__allocator, new_length); \
+        extend(append__list, append__allocator, append__elements.length); \
     } \
     __typeof__ (append__elements) append__destination = { \
         .base = append__list->base + append__list->length, \
