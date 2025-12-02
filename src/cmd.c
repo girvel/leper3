@@ -33,8 +33,24 @@ void _clear(StringArray args) {
 
 void _date(StringArray args) {
     Allocator heap = heap_get_allocator();
+
+    clock_Time time = clock_read();
+
     DynamicString result = {0};
-    string_append_signed(&result, &heap, 223);
+    da_append(&result, &heap, '2');
+    da_append(&result, &heap, '0');
+    string_write_signed(&result, &heap, time.year);
+    da_append(&result, &heap, '-');
+    string_write_signed(&result, &heap, time.month);
+    da_append(&result, &heap, '-');
+    string_write_signed(&result, &heap, time.day);
+    da_append(&result, &heap, ' ');
+    string_write_signed(&result, &heap, time.hours);
+    da_append(&result, &heap, ':');
+    string_write_signed(&result, &heap, time.minutes);
+    da_append(&result, &heap, ':');
+    string_write_signed(&result, &heap, time.seconds);
+
     tty_write(slice(String, result));
     free(&heap, result);
 }

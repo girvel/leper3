@@ -78,7 +78,7 @@ StringArray string_split(String target, Allocator *allocator, u8 separator) {
 
 u8 _string_digits[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-void string_append_signed(DynamicString *target, Allocator *allocator, i32 integer) {
+void string_write_signed(DynamicString *target, Allocator *allocator, i32 integer) {
     if (integer < 0) {
         da_append(target, allocator, '-');
     }
