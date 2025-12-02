@@ -101,6 +101,24 @@ void string_write_signed(DynamicString *target, Allocator *allocator, i32 intege
     }
 }
 
+bool string_to_signed(String str, i32 *result) {
+    i32 sign = 1;
+    if (str.base[0] == '-') {
+        sign = -1;
+        str.base++;
+        str.length--;
+    }
+
+    i32 value = 0;
+    foreach(u8 *, character, &str) {
+        if (*character < '0' || *character > '9') return false;
+        value = value * 10 + (*character - '0');
+    }
+
+    *result = sign * value;
+    return true;
+}
+
 void string_format(DynamicString *target, Allocator *allocator, String format, ...) {
     va_list args;
     va_start(args, format);

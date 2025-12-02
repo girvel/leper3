@@ -80,12 +80,24 @@ void _crash(StringArray args) {
 
 void _random(StringArray args) {
     Allocator heap = heap_get_allocator();
+    i32 n;
     if (args.length == 1) {
-        DynamicString str = {0};
-        string_write_signed(&str, &heap, random_next());
-        tty_write(to_fat(String, str));
-        free(&heap, str);
+        n = random_next();
+    } else if (args.length == 2) {
+        i32 arg;
+        if (!string_to_signed(args.base[1], &arg)) {
+            tty_write(literal("Invalid argument; should be an integer"));
+            return;
+        }
+
+        n = (u32)random_next() % arg;
+    } else {
+        return;
     }
+    DynamicString str = {0};
+    string_write_signed(&str, &heap, n);
+    tty_write(to_fat(String, str));
+    free(&heap, str);
 }
 
 void _help(StringArray);
