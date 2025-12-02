@@ -96,7 +96,7 @@ cmd_Entry cmd_entries_base[7] = {
     {literal("clear"), _clear, literal("")},
     {literal("date"), _date, literal("display date/time")},
     {literal("reboot"), _reboot, literal("")},
-    {literal("crash"), _crash, literal("divides 1/0")},
+    {literal("crash"), _crash, literal("emulate OS crash")},
     {literal("help"), _help, literal("display help")},
 };
 

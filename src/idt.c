@@ -7,6 +7,8 @@
 #include "modern/memory.h"
 #include "vga.c"
 #include "arena.c"
+#include "kb.c"
+#include "power.c"
 
 typedef struct {
     u16 offset_low;  // Lower 16 bits of the function address
@@ -82,7 +84,10 @@ String _idt_interrupt_names_base[15] = {
     literal("Page Fault: Attempting to access invalid memory"),
 };
 
-StringArray _idt_interrupt_names = {.base = _idt_interrupt_names_base, .length = sizeof(_idt_interrupt_names_base)};
+StringArray _idt_interrupt_names = {
+    .base = _idt_interrupt_names_base,
+    .length = sizeof(_idt_interrupt_names_base) / sizeof(_idt_interrupt_names_base[0])
+};
 
 void idt_handler(isr_Registers *registers) {
     static_region(String, arena_base, 1024);
@@ -104,5 +109,8 @@ void idt_handler(isr_Registers *registers) {
         vga_write((u8_2) {2, 3}, _idt_interrupt_names.base[registers->int_no], red);
     }
 
-    while (1); // TODO wait for enter to reboot
+    vga_write((u8_2) {2, VGA_VIDEO_MEMORY_H - 2}, literal("Press [Enter] to reboot..."), red);
+
+    while (kb_read() != '\n');
+    power_reboot();
 }

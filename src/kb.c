@@ -1,3 +1,5 @@
+#pragma once
+
 #include "modern/integer.h"
 #include "io.c"
 
