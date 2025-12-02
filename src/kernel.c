@@ -46,9 +46,9 @@ typedef struct {
 
 void run() {
     heap_init();
+    Allocator heap = heap_get_allocator();
 
     tty_draw_bg();
-    tty_write(literal("Leper OS 3.0.0-alpha.1\n"));
 
     // tty_write(literal("# # #    #    #### #### #### ####       ###  ###    # # #\n"));
     // tty_write(literal(" # #     #    #    #  # #    #  #      #  # #        # # \n"));
@@ -56,7 +56,7 @@ void run() {
     // tty_write(literal(" # #     #    #    ###  #    ###       #  #    #     # # \n"));
     // tty_write(literal("# # #    #### #### #    #### #  #      ###  ###     # # #\n"));
 
-    static_region(DynamicString, cmd_buffer, 128);
+    DynamicString cmd_buffer = allocate(DynamicString, &heap, null, 128);
 
     while (true) {
         cmd_buffer.size = 0;
@@ -64,35 +64,30 @@ void run() {
         tty_read(&cmd_buffer, .end = '\n');
 
         String cmd = slice(String, cmd_buffer);
-        if (string_equal(string_sub(cmd, 0, 4), literal("echo"))) {
+        if (string_starts_with(cmd, literal("echo"))) {
             tty_write(string_sub(cmd, 5, cmd.length));
         } else if (string_starts_with(cmd, literal("split"))) {
-            Allocator heap = heap_get_allocator();
-
-            Strings result = allocate(Strings, &heap, null, 128);
-            DynamicString split_buffer = {0};
+            Strings result = {0};
+            DynamicString current_word = {0};
 
             foreach (u8 *, character, &cmd) {
                 bool push = false;
                 if (*character == ' ') {
                     push = true;
                 } else {
-                    da_append(&split_buffer, &heap, *character);
+                    da_append(&current_word, &heap, *character);
                 }
 
-                if (split_buffer.size > 0 && (push || character == cmd.base + cmd.length - 1)) {
-                    String next = allocate(String, &heap, null, split_buffer.size);
-                    copy(split_buffer, next);
-                    result.base[result.size] = next;
-                    result.size++;
-                    split_buffer.size = 0;
+                if (current_word.size > 0 && (push || character == cmd.base + cmd.length - 1)) {
+                    da_append(&result, &heap, slice(String, current_word));
+                    current_word = (DynamicString) {0};
                 }
             }
 
             StringArray words = slice(StringArray, result);
-            foreach (String *, word, &words) {
+            enumerate (address, i, String *, word, &words) {
+                if (i > 0) tty_write(literal("\n"));
                 tty_write(*word);
-                tty_write(literal("\n"));
             }
         } else {
             tty_write(literal("Unknown command"));

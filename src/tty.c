@@ -31,6 +31,7 @@ void tty_draw_bg() {
         right->character = 0xBA;
     }
 
+    vga_write((u8_2) {2, 0}, literal("Leper OS 3.0.0-alpha.1\n"), terminal);
     vga_cursor(false);
 }
 

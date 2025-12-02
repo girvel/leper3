@@ -19,6 +19,11 @@ typedef struct {
     NAME.base = concat3(__, NAME, _base); \
     NAME.length = LENGTH;
 
+#define enumerate(TYPE_I, I, TYPE, VARNAME, TARGET) \
+    TYPE_I I = 0; \
+    __typeof__ (TARGET) __target = (TARGET); \
+    for (TYPE VARNAME = __target->base; I < __target->length; VARNAME = __target->base + ++I)
+
 #define foreach(TYPE, VARNAME, TARGET) \
     for (TYPE VARNAME = (TARGET)->base; VARNAME < (TARGET)->base + (TARGET)->length; VARNAME++)
 
