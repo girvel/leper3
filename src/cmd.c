@@ -48,8 +48,33 @@ void _reboot(StringArray args) {
     power_reboot();
 }
 
-void _div_by_zero(StringArray args) {
-    u8 _ = 1/0;
+void _crash_help() {
+    tty_write(literal("crash zero: divide by zero\n"));
+    tty_write(literal("crash invalid: execute invalid opcode\n"));
+    tty_write(literal("crash gpf: trigger general protection fault\n"));
+    tty_write(literal("crash null: break paging"));
+}
+
+void _crash(StringArray args) {
+    if (args.length < 2) {
+        _crash_help();
+        return;
+    }
+
+    String arg = args.base[1];
+    if (string_equal(arg, literal("zero"))) {
+        volatile u8 zero = 0;
+        u8 _ = 1 / zero;
+        (void)_;
+    } else if (string_equal(arg, literal("invalid"))) {
+        __asm__ volatile("ud2");
+    } else if (string_equal(arg, literal("gpf"))) {
+       __asm__ volatile("mov $0xFFFF, %ax; mov %ax, %ds");
+    } else if (string_equal(arg, literal("null"))) {
+        *((volatile u8 *)0x0) = 0;
+    } else {
+        _crash_help();
+    }
 }
 
 void _help(StringArray);
@@ -71,7 +96,7 @@ cmd_Entry cmd_entries_base[7] = {
     {literal("clear"), _clear, literal("")},
     {literal("date"), _date, literal("display date/time")},
     {literal("reboot"), _reboot, literal("")},
-    {literal("crash"), _div_by_zero, literal("divides 1/0")},
+    {literal("crash"), _crash, literal("divides 1/0")},
     {literal("help"), _help, literal("display help")},
 };
 
