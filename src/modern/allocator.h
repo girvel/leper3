@@ -8,7 +8,6 @@ typedef struct {
     void (*free_raw)(void *payload, void *base);
 } Allocator;
 
-// TODO non-1-byte lengths
 #define allocate(TYPE, ALLOCATOR, PREV, LENGTH) ({ \
     __typeof__ (ALLOCATOR) __allocator = (ALLOCATOR); \
     void *__prev = (PREV).base; \
@@ -19,6 +18,11 @@ typedef struct {
     ); \
     __result; \
 })
+
+#define free(ALLOCATOR, FAT) do { \
+    __typeof__ (ALLOCATOR) __allocator = (ALLOCATOR); \
+    __allocator->free_raw(__allocator->payload, (FAT).base); \
+} while (0)
 
 #define da_append(ARRAY, ALLOCATOR, ELEMENT) do { \
     __typeof__ (ARRAY) da_append__array = (ARRAY); \

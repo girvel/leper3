@@ -49,6 +49,11 @@ void run() {
             }
         }
 
+        foreach (String *, arg, &args) {
+            free(&heap, *arg);
+        }
+        free(&heap, args);
+
         tty_write(literal("Unknown command"));
     }
 }

@@ -75,3 +75,25 @@ StringArray string_split(String target, Allocator *allocator, u8 separator) {
 
     return slice(StringArray, result);
 }
+
+u8 _string_digits[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+void string_append_signed(DynamicString *target, Allocator *allocator, i32 integer) {
+    if (integer < 0) {
+        da_append(target, allocator, '-');
+    }
+    address start = target->size;
+
+    do {
+        u8 n = integer % 10;
+        integer /= 10;
+        da_append(target, allocator, _string_digits[n]);
+    } while (integer != 0);
+
+    for (address i = start; i < (start + target->size) / 2; i++) {
+        address j = target->size - 1 - i + start;
+        u8 tmp = target->base[i];
+        target->base[i] = target->base[j];
+        target->base[j] = tmp;
+    }
+}

@@ -1,4 +1,4 @@
-// DEVELOPMENT FROZEN, DO NOT USE
+#pragma once
 
 #include "modern/integer.h"
 #include "modern/memory.h"

@@ -2,6 +2,8 @@
 
 #include "modern/string.h"
 #include "tty.c"
+#include "heap.c"
+#include "clock.c"
 
 void _split(StringArray args) {
     StringArray words = args;
@@ -29,6 +31,14 @@ void _clear(StringArray args) {
     tty_clear();
 }
 
+void _date(StringArray args) {
+    Allocator heap = heap_get_allocator();
+    DynamicString result = {0};
+    string_append_signed(&result, &heap, 223);
+    tty_write(slice(String, result));
+    free(&heap, result);
+}
+
 void _help(StringArray);
 
 typedef struct {
@@ -42,23 +52,24 @@ typedef struct {
     address length;
 } cmd_Entries;
 
-cmd_Entry cmd_entries_base[4] = {
+cmd_Entry cmd_entries_base[5] = {
     {literal("split"), _split, literal("")},
     {literal("echo"), _echo, literal("")},
     {literal("clear"), _clear, literal("")},
+    {literal("date"), _date, literal("display date/time")},
     {literal("help"), _help, literal("display help")},
 };
 
-cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 4};
+cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 5};
 
 void _help(StringArray args) {
-    foreach (cmd_Entry *, entry, &cmd_entries) {
+    enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {
+        if (i > 0) tty_write(literal("\n"));
         tty_write(literal("- "));
         tty_write(entry->name);
         if (entry->description.length > 0) {
             tty_write(literal(": "));
             tty_write(entry->description);
         }
-        tty_write(literal("\n"));
     }
 }
