@@ -5,6 +5,7 @@
 #include "heap.c"
 #include "clock.c"
 #include "power.c"
+#include "random.c"
 
 void _split(StringArray args) {
     StringArray words = args;
@@ -77,6 +78,16 @@ void _crash(StringArray args) {
     }
 }
 
+void _random(StringArray args) {
+    Allocator heap = heap_get_allocator();
+    if (args.length == 1) {
+        DynamicString str = {0};
+        string_write_signed(&str, &heap, random_next());
+        tty_write(to_fat(String, str));
+        free(&heap, str);
+    }
+}
+
 void _help(StringArray);
 
 typedef struct {
@@ -90,17 +101,18 @@ typedef struct {
     address length;
 } cmd_Entries;
 
-cmd_Entry cmd_entries_base[7] = {
+cmd_Entry cmd_entries_base[8] = {
     {literal("split"), _split, literal("")},
     {literal("echo"), _echo, literal("")},
     {literal("clear"), _clear, literal("")},
     {literal("date"), _date, literal("display date/time")},
     {literal("reboot"), _reboot, literal("")},
     {literal("crash"), _crash, literal("emulate OS crash")},
+    {literal("random"), _random, literal("generate a random number")},
     {literal("help"), _help, literal("display help")},
 };
 
-cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 7};
+cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 8};
 
 void _help(StringArray args) {
     enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {
