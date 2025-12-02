@@ -37,3 +37,7 @@ String string_sub(String a, address start, address end) {
         .length = end - start,
     };
 }
+
+bool string_starts_with(String target, String prefix) {
+    return string_equal(string_sub(target, 0, prefix.length), prefix);
+}

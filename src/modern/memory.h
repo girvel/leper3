@@ -26,3 +26,20 @@ typedef struct {
     __typeof__ (X) __x = (X); \
     (SLICE_TYPE) {.base = __x.base, .length = __x.size}; \
 })
+
+#define fat_cast(TYPE, REGION) ({ \
+    __typeof__ (REGION) __region = (REGION); \
+    (TYPE) { \
+        .base = __region.base, \
+        .length = __region.length \
+    }; \
+})
+
+#define copy(SOURCE, DESTINATION) do { \
+    __typeof__ (SOURCE) __source = (SOURCE); \
+    __typeof__ (DESTINATION) __destination = (DESTINATION); \
+    for (address i = 0; i < MIN2(__source.length, __destination.length); i++) { \
+        __destination.base[i] = __source.base[i]; \
+    } \
+} while (0)
+
