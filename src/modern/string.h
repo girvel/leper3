@@ -3,6 +3,7 @@
 #include "integer.h"
 #include "memory.h"
 #include "allocator.h"
+#include "time.h"
 #include <stdarg.h>
 
 typedef struct {
@@ -111,6 +112,12 @@ void string_format(DynamicString *target, Allocator *allocator, String format, .
                 append(target, allocator, '%');
             } else if (*character == 'i') {
                 string_write_signed(target, allocator, va_arg(args, i32));
+            } else if (*character == 't') {
+                Time *time = va_arg(args, Time*);
+                string_format(
+                    target, allocator, literal("20%02i-%02i-%02i %02i:%02i:%02i"),
+                    time->year, time->month, time->day, time->hours, time->minutes, time->seconds
+                );
             } else if (*character == '0') {
                 character++;
                 u32 padding = 0;

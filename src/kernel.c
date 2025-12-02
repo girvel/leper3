@@ -10,6 +10,7 @@ int main() {
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"
+#include "clock.c"
 #include "idt.c"
 #include "vmm.c"
 #include "modern/string.h"
@@ -28,6 +29,16 @@ void run() {
     Allocator heap = heap_get_allocator();
 
     tty_clear();
+
+    tty_write(literal("\nWelcome to Leper OS!\n"));
+    {
+        DynamicString str = {0};
+        Time t = clock_read();
+        string_format(&str, &heap, literal("Today is %t"), &t);
+        tty_write(to_fat(String, str));
+        free(&heap, str);
+    }
+    tty_write(literal("\n"));
 
     // tty_write(literal("# # #    #    #### #### #### ####       ###  ###    # # #\n"));
     // tty_write(literal(" # #     #    #    #  # #    #  #      #  # #        # # \n"));

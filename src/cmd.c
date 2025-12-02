@@ -35,10 +35,10 @@ void _clear(StringArray args) {
 void _date(StringArray args) {
     Allocator heap = heap_get_allocator();
 
-    clock_Time time = clock_read();
+    Time time = clock_read();
 
     DynamicString result = {0};
-    string_format(&result, &heap, literal("20%02i-%02i-%02i %02i:%02i:%02i"), time.year, time.month, time.day, time.hours, time.minutes, time.seconds);
+    string_format(&result, &heap, literal("%t"), &time);
 
     tty_write(to_fat(String, result));
     free(&heap, result);
