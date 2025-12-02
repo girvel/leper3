@@ -6,33 +6,30 @@
 const vga_Color terminal = vga_Color_bg_blue | vga_Color_fg_white;
 u8_2 pos = {2, 1};
 
-void tty_draw_bg() {
+void tty_clear() {
     vga_clear(terminal);
 
     for (u8 x = 0; x < VGA_VIDEO_MEMORY_W; x++) {
-        vga_Cell *upper = vga_cell((u8_2) {x, 0});
-        vga_Cell *lower = vga_cell((u8_2) {x, VGA_VIDEO_MEMORY_H - 1});
+    for (u8 y = 0; y < VGA_VIDEO_MEMORY_H; y++) {
+        vga_Cell *cell = vga_cell((u8_2) {x, y});
         if (x == 0) {
-            upper->character = 0xC9;
-            lower->character = 0xC8;
+            if (y == 0) cell->character = 0xC9;
+            else if (y == VGA_VIDEO_MEMORY_H - 1) cell->character = 0xC8;
+            else cell->character = 0xBA;
         } else if (x == VGA_VIDEO_MEMORY_W - 1) {
-            upper->character = 0xBB;
-            lower->character = 0xBC;
+            if (y == 0) cell->character = 0xBB;
+            else if (y == VGA_VIDEO_MEMORY_H - 1) cell->character = 0xBC;
+            else cell->character = 0xBA;
         } else {
-            upper->character = 0xCD;
-            lower->character = 0xCD;
+            if (y == 0) cell->character = 0xCD;
+            else if (y == VGA_VIDEO_MEMORY_H - 1) cell->character = 0xCD;
+            else cell->character = ' ';
         }
-    }
-
-    for (u8 y = 1; y < VGA_VIDEO_MEMORY_H - 1; y++) {
-        vga_Cell *left = vga_cell((u8_2) {0, y});
-        vga_Cell *right = vga_cell((u8_2) {VGA_VIDEO_MEMORY_W - 1, y});
-        left->character = 0xBA;
-        right->character = 0xBA;
-    }
+    }}
 
     vga_write((u8_2) {2, 0}, literal("Leper OS 3.0.0-alpha.1\n"), terminal);
     vga_cursor(false);
+    pos = (u8_2) {2, 1};
 }
 
 void tty_write(String str) {

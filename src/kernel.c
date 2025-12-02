@@ -48,7 +48,7 @@ void run() {
     heap_init();
     Allocator heap = heap_get_allocator();
 
-    tty_draw_bg();
+    tty_clear();
 
     // tty_write(literal("# # #    #    #### #### #### ####       ###  ###    # # #\n"));
     // tty_write(literal(" # #     #    #    #  # #    #  #      #  # #        # # \n"));
@@ -89,6 +89,8 @@ void run() {
                 if (i > 0) tty_write(literal("\n"));
                 tty_write(*word);
             }
+        } else if (string_starts_with(cmd, literal("clear"))) {
+            tty_clear();
         } else {
             tty_write(literal("Unknown command"));
         }
