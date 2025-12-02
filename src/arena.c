@@ -1,4 +1,5 @@
 #include "modern/memory.h"
+#include "modern/allocator.h"
 
 typedef struct {
     void *base;
@@ -6,7 +7,8 @@ typedef struct {
     address size;
 } Arena;
 
-void *arena_allocate_raw(Arena *self, address length) {
+void *_arena_allocate_raw(void *payload, void *prev, address length) {
+    Arena *self = payload;
     if (self->size + length > self->length) {
         return 0;
     }
@@ -16,8 +18,12 @@ void *arena_allocate_raw(Arena *self, address length) {
     return result;
 }
 
-// TODO non-1-byte lengths
-#define arena_allocate(TYPE, ARENA, LENGTH) ({ \
-    address __length = (LENGTH); \
-    (TYPE) {.base = arena_allocate_raw((ARENA), __length), .length = __length}; \
-})
+void _arena_free_raw(void *payload, void *base) {}
+
+Allocator arena_get_allocator(Arena *self) {
+    return (Allocator) {
+        .payload = self,
+        .allocate_raw = _arena_allocate_raw,
+        .free_raw = _arena_free_raw,
+    };
+}

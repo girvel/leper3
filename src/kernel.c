@@ -11,9 +11,10 @@ int main() {
 #include "arena.c"
 #include "modern/string.h"
 #include "modern/memory.h"
+#include "modern/allocator.h"
 
 // PLAN:
-// - split a string using arena + stack memory
+// + split a string using arena + stack memory
 // - use page memory
 
 typedef struct {
@@ -43,9 +44,10 @@ void run() {
             tty_write(string_sub(cmd, 5, cmd.length));
         } else if (string_starts_with(cmd, literal("split"))) {
             static_region(String, page, 512);
-            Arena arena = fat_cast(Arena, page);
+            Arena _arena = fat_cast(Arena, page);
+            Allocator arena = arena_get_allocator(&_arena);
 
-            Strings result = arena_allocate(Strings, &arena, 128);
+            Strings result = allocate(Strings, &arena, null, 128);
             static_region(DynamicString, split_buffer, 128);
 
             foreach (u8 *, character, &cmd) {
@@ -59,7 +61,7 @@ void run() {
                 }
 
                 if (split_buffer.size > 0 && (push || character == cmd.base + cmd.length - 1)) {
-                    String next = arena_allocate(String, &arena, split_buffer.size);
+                    String next = allocate(String, &arena, null, split_buffer.size);
                     copy(split_buffer, next);
                     result.base[result.size] = next;
                     result.size++;

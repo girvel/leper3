@@ -16,6 +16,7 @@ typedef struct {
 
 #define literal(C_STRING) ((String) {.base = (u8 *)(C_STRING), .length = sizeof((C_STRING)) - 1})
 
+// TODO these all can be memory macros
 bool string_equal(String a, String b) {
     if (a.length != b.length) return false;
     for (address i = 0; i < a.length; i++) {
