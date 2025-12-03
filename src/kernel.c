@@ -17,10 +17,6 @@ int main() {
 #include "modern/memory.h"
 #include "modern/allocator.h"
 
-// PLAN:
-// + split a string using arena + stack memory
-// - use page memory
-
 void run() {
     page_init();
     idt_init();
@@ -56,6 +52,7 @@ void run() {
 
         String cmd_full = to_fat(String, cmd_buffer);
         StringArray args = string_split(cmd_full, &heap, ' ');
+        if (args.length == 0) goto redo;
         String cmd = args.base[0];
 
         foreach (cmd_Entry *, entry, &cmd_entries) {
