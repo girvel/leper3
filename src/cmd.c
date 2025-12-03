@@ -107,7 +107,7 @@ static inline i32 mod(i32 a, i32 b) {
 }
 
 void _game_of_life(StringArray args) {
-    u32 delay = 1000;
+    u32 delay = 1000 / 25;
     if (args.length == 2) {
         i32 n;
         if (!string_to_signed(args.base[1], &n)) {
@@ -144,6 +144,7 @@ void _game_of_life(StringArray args) {
             cell->color = color;
         }}
 
+        u8 next[w][h];
         for (pos.x = 0; pos.x < w; pos.x++) {
         for (pos.y = 0; pos.y < h; pos.y++) {
             u8 neighbours =
@@ -157,11 +158,12 @@ void _game_of_life(StringArray args) {
                 (field[mod(pos.x + 1, w)][mod(pos.y + 1, h)] == alive);
             bool is_alive = field[pos.x][pos.y] == alive;
 
-            field[pos.x][pos.y] =
+            next[pos.x][pos.y] =
                 (is_alive && neighbours >= 2 && neighbours <= 3)
                 || (!is_alive && neighbours == 3)
                     ? alive : dead;
         }}
+        copy_raw(next, field, w*h);
 
         for (volatile address i = 0; i < 10000 * delay; i++) {
             if (kb_read() == '\n') {

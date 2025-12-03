@@ -40,6 +40,14 @@ typedef struct {
     }; \
 })
 
+void copy_raw(void *source, void *destination, address length) {
+    u8 *_source = source;
+    u8 *_destination = destination;
+    for (address i = 0; i < length; i++) {
+        _destination[i] = _source[i];
+    }
+}
+
 #define copy(SOURCE, DESTINATION) do { \
     __typeof__ (SOURCE) __source = (SOURCE); \
     __typeof__ (DESTINATION) __destination = (DESTINATION); \
