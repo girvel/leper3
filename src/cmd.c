@@ -165,13 +165,27 @@ void _game_of_life(StringArray args) {
         }}
         copy_raw(next, field, w*h);
 
-        for (volatile address i = 0; i < 10000 * delay; i++) {
+        u32 ms = clock_ms();
+        while (clock_ms() - ms < delay) {
             if (kb_read() == '\n') {
                 tty_clear();
                 return;
             }
         }
     }
+}
+
+void _calibrate(StringArray args) {
+    tty_write(literal("Press [Enter] after 10 seconds"));
+    u32 frame = clock_frame();
+    while (kb_read() != '\n');
+    clock_MHz = (u32)((clock_frame() - frame) >> 20) / 15;  // x1.5 is a bullshitting coefficient
+    
+    Allocator heap = heap_get_allocator();
+    DynamicString str = {0};
+    string_format(&str, &heap, literal("\n%i MHz"), clock_MHz);
+    tty_write(to_fat(String, str));
+    free(&heap, str);
 }
 
 void _help(StringArray);
@@ -187,7 +201,7 @@ typedef struct {
     address length;
 } cmd_Entries;
 
-cmd_Entry cmd_entries_base[9] = {
+cmd_Entry cmd_entries_base[10] = {
     {literal("split"), _split, literal("")},
     {literal("echo"), _echo, literal("")},
     {literal("clear"), _clear, literal("")},
@@ -196,10 +210,11 @@ cmd_Entry cmd_entries_base[9] = {
     {literal("crash"), _crash, literal("emulate OS crash")},
     {literal("random"), _random, literal("generate a random number")},
     {literal("gol"), _game_of_life, literal("play game of life")},
+    {literal("calibrate"), _calibrate, literal("calibrate the timer")},
     {literal("help"), _help, literal("display help")},
 };
 
-cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 9};
+cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 10};
 
 void _help(StringArray args) {
     enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {

@@ -21,3 +21,15 @@ Time clock_read() {
         _clock_read(0x09)
     };
 }
+
+u64 clock_frame() {
+    u32 low, high;
+    __asm__ volatile("rdtsc" : "=a"(low), "=d"(high));
+    return ((u64)high << 32) | low;
+}
+
+u32 clock_MHz = 4 * 1024 * 1024;
+
+u32 clock_ms() {
+    return (u32)clock_frame() / clock_MHz;
+}
