@@ -6,6 +6,7 @@
 #include "clock.c"
 #include "power.c"
 #include "random.c"
+#include "vga.c"
 
 void _split(StringArray args) {
     StringArray words = args;
@@ -100,6 +101,64 @@ void _random(StringArray args) {
     free(&heap, str);
 }
 
+static inline i32 mod(i32 a, i32 b) {
+    i32 r = a % b;
+    return r < 0 ? r + b : r;
+}
+
+void _game_of_life(StringArray args) {
+    const u8 w = VGA_VIDEO_MEMORY_W;
+    const u8 h = VGA_VIDEO_MEMORY_H;
+    const u8 alive = 0x07;
+    const u8 dead = ' ';
+
+    u8 field[w][h];
+
+    u8_2 pos;
+    for (pos.x = 0; pos.x < w; pos.x++) {
+    for (pos.y = 0; pos.y < h; pos.y++) {
+        field[pos.x][pos.y] = random_next() > 0 ? 0x07 : ' ';
+    }}
+
+    vga_Color color = vga_Color_fg_white | vga_Color_bg_black;
+
+    while (true) {
+        for (pos.x = 0; pos.x < w; pos.x++) {
+        for (pos.y = 0; pos.y < h; pos.y++) {
+            vga_Cell *cell = vga_cell(pos);
+            cell->character = field[pos.x][pos.y];
+            cell->color = color;
+        }}
+
+        for (pos.x = 0; pos.x < w; pos.x++) {
+        for (pos.y = 0; pos.y < h; pos.y++) {
+            u8 neighbours =
+                (field[mod(pos.x - 1, w)][mod(pos.y - 1, h)] == alive) +
+                (field[mod(pos.x - 1, w)][pos.y] == alive) +
+                (field[mod(pos.x - 1, w)][mod(pos.y + 1, h)] == alive) +
+                (field[pos.x][mod(pos.y - 1, h)] == alive) +
+                (field[pos.x][mod(pos.y + 1, h)] == alive) +
+                (field[mod(pos.x + 1, w)][mod(pos.y - 1, h)] == alive) +
+                (field[mod(pos.x + 1, w)][pos.y] == alive) +
+                (field[mod(pos.x + 1, w)][mod(pos.y + 1, h)] == alive);
+            bool is_alive = field[pos.x][pos.y] == alive;
+
+            field[pos.x][pos.y] =
+                (is_alive && neighbours >= 2 && neighbours <= 3)
+                || (!is_alive && neighbours == 3)
+                    ? alive : dead;
+        }}
+
+        for (volatile address i = 0; i < 1000000; i++) {
+            if (kb_read() == '\n') {
+                tty_clear();
+                return;
+            }
+        }
+
+    }
+}
+
 void _help(StringArray);
 
 typedef struct {
@@ -113,7 +172,7 @@ typedef struct {
     address length;
 } cmd_Entries;
 
-cmd_Entry cmd_entries_base[8] = {
+cmd_Entry cmd_entries_base[9] = {
     {literal("split"), _split, literal("")},
     {literal("echo"), _echo, literal("")},
     {literal("clear"), _clear, literal("")},
@@ -121,10 +180,11 @@ cmd_Entry cmd_entries_base[8] = {
     {literal("reboot"), _reboot, literal("")},
     {literal("crash"), _crash, literal("emulate OS crash")},
     {literal("random"), _random, literal("generate a random number")},
+    {literal("gol"), _game_of_life, literal("play game of life")},
     {literal("help"), _help, literal("display help")},
 };
 
-cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 8};
+cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 9};
 
 void _help(StringArray args) {
     enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {
