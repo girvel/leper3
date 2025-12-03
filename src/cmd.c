@@ -107,6 +107,20 @@ static inline i32 mod(i32 a, i32 b) {
 }
 
 void _game_of_life(StringArray args) {
+    u32 delay = 1000;
+    if (args.length == 2) {
+        i32 n;
+        if (!string_to_signed(args.base[1], &n)) {
+            tty_write(literal("Expected number as an argument"));
+            return;
+        }
+        if (n < 0) {
+            tty_write(literal("The delay can not be negative"));
+            return;
+        }
+        delay = n;
+    }
+
     const u8 w = VGA_VIDEO_MEMORY_W;
     const u8 h = VGA_VIDEO_MEMORY_H;
     const u8 alive = 0x07;
@@ -149,13 +163,12 @@ void _game_of_life(StringArray args) {
                     ? alive : dead;
         }}
 
-        for (volatile address i = 0; i < 1000000; i++) {
+        for (volatile address i = 0; i < 10000 * delay; i++) {
             if (kb_read() == '\n') {
                 tty_clear();
                 return;
             }
         }
-
     }
 }
 
