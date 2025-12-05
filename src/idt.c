@@ -66,7 +66,7 @@ void idt_init() {
     __asm__ volatile("lidt %0" : : "m"(idt_ptr));
 }
 
-String _idt_interrupt_names_base[15] = {
+def_region(String, _idt_interrupt_descriptions, {
     literal("Division by zero"),
     literal("<unknown>"),
     literal("<unknown>"),
@@ -82,12 +82,7 @@ String _idt_interrupt_names_base[15] = {
     literal("<unknown>"),
     literal("General Protection Fault: Permission violations"),
     literal("Page Fault: Attempting to access invalid memory"),
-};
-
-StringArray _idt_interrupt_names = {
-    .base = _idt_interrupt_names_base,
-    .length = sizeof(_idt_interrupt_names_base) / sizeof(_idt_interrupt_names_base[0])
-};
+});
 
 void idt_handler(isr_Registers *registers) {
     static_region(String, arena_base, 1024);
@@ -105,8 +100,9 @@ void idt_handler(isr_Registers *registers) {
     );
     vga_write((u8_2) {2, 2}, to_fat(String, report), red);
 
-    if (registers->int_no < _idt_interrupt_names.length) {
-        vga_write((u8_2) {2, 3}, _idt_interrupt_names.base[registers->int_no], red);
+    String *description = at(_idt_interrupt_descriptions, registers->int_no);
+    if (description) {
+        vga_write((u8_2) {2, 3}, *description, red);
     }
 
     vga_write((u8_2) {2, VGA_VIDEO_MEMORY_H - 2}, literal("Press [Enter] to reboot..."), red);

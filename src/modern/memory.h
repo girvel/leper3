@@ -13,6 +13,21 @@ typedef struct {
 #define null ((Fat) {0})
 #define is_null(X) ((X).base == 0)
 
+#define fat(TYPE) struct { TYPE *base; address length; }
+
+#define def_region(TYPE, NAME, ...) \
+    TYPE concat3(_, NAME, _base)[] = __VA_ARGS__; \
+    fat(TYPE) NAME = { \
+        .base = concat3(_, NAME, _base), \
+        .length = sizeof(concat3(_, NAME, _base)) / sizeof(*concat3(_, NAME, _base)) \
+    };
+
+#define at(FAT, INDEX) ({ \
+    __typeof__ (FAT) __fat = (FAT); \
+    __typeof__ (INDEX) __index = (INDEX); \
+    __index >= 0 && __index < __fat.length ? __fat.base + __index : 0; \
+})
+
 #define static_region(TYPE, NAME, LENGTH) \
     TYPE NAME = {0}; \
     __typeof__ (NAME.base[0]) concat3(__, NAME, _base)[LENGTH]; \
