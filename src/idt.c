@@ -66,7 +66,7 @@ void idt_init() {
     __asm__ volatile("lidt %0" : : "m"(idt_ptr));
 }
 
-def_region(String, _idt_interrupt_descriptions, {
+def_region(StringArray, _idt_interrupt_descriptions, {
     literal("Division by zero"),
     literal("<unknown>"),
     literal("<unknown>"),

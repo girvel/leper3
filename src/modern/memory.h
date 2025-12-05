@@ -16,8 +16,8 @@ typedef struct {
 #define fat(TYPE) struct { TYPE *base; address length; }
 
 #define def_region(TYPE, NAME, ...) \
-    TYPE concat3(_, NAME, _base)[] = __VA_ARGS__; \
-    fat(TYPE) NAME = { \
+    __typeof__ (*((TYPE) {}).base) concat3(_, NAME, _base)[] = __VA_ARGS__; \
+    TYPE NAME = { \
         .base = concat3(_, NAME, _base), \
         .length = sizeof(concat3(_, NAME, _base)) / sizeof(*concat3(_, NAME, _base)) \
     };
