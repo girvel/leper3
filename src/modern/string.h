@@ -119,10 +119,15 @@ bool string_to_signed(String str, i32 *result) {
     return true;
 }
 
+void string_format_args(DynamicString *target, Allocator *allocator, String format, va_list args);
+
 void string_format(DynamicString *target, Allocator *allocator, String format, ...) {
     va_list args;
     va_start(args, format);
+    string_format_args(target, allocator, format, args);
+}
 
+void string_format_args(DynamicString *target, Allocator *allocator, String format, va_list args) {
     foreach (u8 *, character, &format) {
         if (*character == '%') {
             character++;

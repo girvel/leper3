@@ -27,13 +27,8 @@ void run() {
     tty_clear();
 
     tty_write(literal("\nWelcome to Leper OS!\n"));
-    {
-        DynamicString str = {0};
-        Time t = clock_read();
-        string_format(&str, &heap, literal("Today is %t"), &t);
-        tty_write(to_fat(String, str));
-        free(&heap, str);
-    }
+    Time t = clock_read();
+    tty_writef(literal("Today is %t"), &t);
     tty_write(literal("\n"));
 
     // tty_write(literal("# # #    #    #### #### #### ####       ###  ###    # # #\n"));

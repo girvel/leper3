@@ -3,6 +3,7 @@
 #include "vga.c"
 #include "kb.c"
 #include "modern/integer.h"
+#include "heap.c"
 
 
 const vga_Color terminal = vga_Color_bg_blue | vga_Color_fg_white;
@@ -57,6 +58,17 @@ void tty_write(String str) {
         }
     }
     vga_cursor_move(pos);
+}
+
+void tty_writef(String format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    Allocator heap = heap_get_allocator();
+    DynamicString str = {0};
+    string_format_args(&str, &heap, format, args);
+    tty_write(to_fat(String, str));
+    free(&heap, str);
 }
 
 typedef struct {

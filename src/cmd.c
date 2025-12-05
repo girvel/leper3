@@ -35,15 +35,8 @@ void _clear(StringArray args) {
 }
 
 void _date(StringArray args) {
-    Allocator heap = heap_get_allocator();
-
     Time time = clock_read();
-
-    DynamicString result = {0};
-    string_format(&result, &heap, literal("%t"), &time);
-
-    tty_write(to_fat(String, result));
-    free(&heap, result);
+    tty_writef(literal("%t"), &time);
 }
 
 void _reboot(StringArray args) {
@@ -181,11 +174,7 @@ void _calibrate(StringArray args) {
     while (kb_read() != '\n');
     clock_MHz = (u32)((clock_frame() - frame) >> 20) / 15;  // x1.5 is a bullshitting coefficient
     
-    Allocator heap = heap_get_allocator();
-    DynamicString str = {0};
-    string_format(&str, &heap, literal("\n%i MHz"), clock_MHz);
-    tty_write(to_fat(String, str));
-    free(&heap, str);
+    tty_writef(literal("\n%i MHz"), clock_MHz);
 }
 
 void _help(StringArray);
