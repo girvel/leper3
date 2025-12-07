@@ -1,5 +1,7 @@
 #!/usr/bin/env luajit
 
+local sources = {"kernel.cpp", "kernel/vga.cpp"}
+
 --- @param cmd string
 --- @param ... any
 local cmd = function(cmd, ...)
@@ -21,10 +23,18 @@ local flags do
 end
 
 cmd("mkdir -p .build")
+cmd("mkdir -p .build/kernel")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")
 -- cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
-cmd("gcc %s -c src/kernel.cpp -o .build/kernel.o", flags)
-cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o")
+
+local object_files = {}
+for _, source in ipairs(sources) do
+  local object_file = ".build/" .. source:gsub("%.cpp", ".o")
+  cmd("g++ %s -c src/%s -o %s", flags, source, object_file)
+  table.insert(object_files, object_file)
+end
+
+cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 %s", table.concat(object_files, " "))
 
 -- cmd("cat .build/boot.bin .build/kernel.bin > .build/leper3.bin")
 do
