@@ -1,6 +1,6 @@
 #!/usr/bin/env luajit
 
-local sources = {"kernel.cpp", "kernel/vga.cpp"}
+local sources = {"kernel.cpp", "kernel/vga.cpp", "kernel/tty.cpp"}
 
 --- @param cmd string
 --- @param ... any

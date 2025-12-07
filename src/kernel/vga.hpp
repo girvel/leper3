@@ -1,7 +1,9 @@
+#pragma once
+
 #include <modern.hpp>
 
 namespace vga {
-    constexpr vector<u8, 2> ScreenSize(25, 80);
+    constexpr vector<u8, 2> ScreenSize(80, 25);
 
     namespace Color {
         enum : u8 {

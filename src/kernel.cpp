@@ -5,12 +5,10 @@ extern "C" [[noreturn]] int main() {
     while (true) { __asm__ volatile ("hlt"); }
 }
 
-#include "kernel/vga.hpp"
+#include "kernel/tty.hpp"
 
 void run() {
-    vga::ColorPair terminal = vga::make_color(vga::Color::White, vga::Color::Blue);
-    vga::clear(terminal);
+    tty::clear();
 
-    vga::write({2, 1}, "Hello, world!", terminal);
-    vga::cursor_visible(false);
+    //vga::write({2, 1}, "Hello, world!", terminal);
 }

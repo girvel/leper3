@@ -7,7 +7,7 @@ namespace {
 
 vga::Cell *vga::cell(vector<u8, 2> position) {
     return reinterpret_cast<vga::Cell *>(VideoMemory)
-        + position.x + position.y * vga::ScreenSize.height;
+        + position.x + position.y * vga::ScreenSize.width;
 }
 
 void vga::clear(vga::ColorPair color) {
@@ -35,7 +35,7 @@ void vga::write(u8x2 position, string text, ColorPair color) {
 }
 
 void vga::cursor_move(u8x2 position) {
-    u16 index = position.y * vga::ScreenSize.height + position.x;
+    u16 index = position.y * vga::ScreenSize.width + position.x;
 
     // send low byte
     io::write(0x3D4, 0x0F);
