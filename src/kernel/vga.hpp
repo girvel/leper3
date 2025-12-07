@@ -24,16 +24,17 @@ namespace vga {
         };
     }
 
-    using Attr = u8;
-    constexpr Attr make_color(u8 fg, u8 bg) {
+    using ColorPair = u8;
+    constexpr ColorPair make_color(u8 fg, u8 bg) {
         return fg | (bg << 4);
     }
 
     struct __attribute__((packed)) Cell {
         u8 character;
-        Attr color;
+        ColorPair color;
     };
 
     Cell *cell(Vector<u8, 2> position);
+    void clear(ColorPair color);
 }
 
