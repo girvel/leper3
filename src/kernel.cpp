@@ -10,5 +10,5 @@ extern "C" [[noreturn]] int main() {
 void run() {
     tty::clear();
 
-    //vga::write({2, 1}, "Hello, world!", terminal);
+    tty::write("Hello, world!");
 }

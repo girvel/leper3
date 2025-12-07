@@ -29,3 +29,29 @@ void tty::clear() {
     vga::cursor_visible(false);
     pos = {2, 1};
 }
+
+void tty::write(string str) {
+    for (u8 character : str) {
+        if (character == '\n') {
+            pos.x = 2;
+            pos.y++;
+        } else if (character == '\b') {
+            if (pos.x == 2) {
+                pos.x = vga::ScreenSize.width - 5;
+                pos.y = max(1, pos.y - 1);
+            } else {
+                pos.x--;
+            }
+            vga::cell(pos)->character = ' ';
+        } else {
+            vga::cell(pos)->character = character;
+            pos.x++;
+            if (pos.x >= vga::ScreenSize.height - 4) {
+                pos.x = 2;
+                pos.y++;
+            }
+        }
+    }
+    vga::cursor_move(pos);
+}
+
