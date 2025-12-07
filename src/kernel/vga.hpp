@@ -35,6 +35,6 @@ namespace vga {
         u8 color;
     };
 
-    Cell *cell(u8 x, u8 y);
+    Cell *cell(Vector<u8, 2> position);
 }
 

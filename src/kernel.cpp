@@ -8,7 +8,7 @@ extern "C" int main() {
 #include "kernel/vga.hpp"
 
 void run() {
-    vga::Cell *zero = vga::cell(0, 0);
+    vga::Cell *zero = vga::cell({0, 0});
     zero->character = '+';
     zero->color = vga::FgWhite | vga::BgBlue;
 }
