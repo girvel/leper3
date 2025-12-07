@@ -5,9 +5,11 @@ extern "C" int main() {
     return 0;
 }
 
+#include <modern.hpp>
+
 struct __attribute__((packed)) vga_Cell {
-    char character;
-    char color;
+    u8 character;
+    u8 color;
 };
 
 #define VGA_VIDEO_MEMORY_ADDRESS 0xb8000
