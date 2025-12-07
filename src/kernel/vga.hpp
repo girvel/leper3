@@ -1,8 +1,7 @@
 #include <modern.hpp>
 
 namespace vga {
-    constexpr u8 h = 25;
-    constexpr u8 w = 80;
+    constexpr Vector<u8, 2> ScreenSize(25, 80);
 
     static constexpr u8 FgBlack = 0x0;
     static constexpr u8 FgBlue = 0x1;

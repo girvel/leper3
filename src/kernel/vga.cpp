@@ -5,6 +5,6 @@ namespace {
 };
 
 vga::Cell *vga::cell(Vector<u8, 2> position) {
-    return (vga::Cell *)VideoMemory + position.items[0] * vga::w + position.items[1];
+    return (vga::Cell *)VideoMemory + position.x * vga::ScreenSize.width + position.y;
 }
 
