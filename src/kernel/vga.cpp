@@ -45,3 +45,9 @@ void vga::cursor_move(u8x2 position) {
     io::write(0x3D4, 0x0E);
     io::write(0x3D5, (u8) ((index >> 8) & 0xFF));
 }
+
+void vga::cursor_visible(bool enable) {
+    io::write(0x3D4, 0x0A);
+    u8 val = io::read(0x3D5);
+    io::write(0x3D5, enable ? val & ~0x20 : val | 0x20);
+}

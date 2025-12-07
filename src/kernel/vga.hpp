@@ -38,5 +38,6 @@ namespace vga {
     void clear(ColorPair color);
     void write(u8x2 position, string text, ColorPair color);
     void cursor_move(u8x2 position);
+    void cursor_visible(bool enable);
 }
 
