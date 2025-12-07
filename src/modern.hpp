@@ -2,5 +2,5 @@
 
 #include "modern/integer.hpp"
 #include "modern/vector.hpp"
-#include "modern/array.hpp"
+#include "modern/slice.hpp"
 #include "modern/string.hpp"

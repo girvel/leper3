@@ -4,7 +4,7 @@ namespace {
     constexpr address VideoMemory = 0xb8000;
 };
 
-vga::Cell *vga::cell(Vector<u8, 2> position) {
+vga::Cell *vga::cell(vector<u8, 2> position) {
     return reinterpret_cast<vga::Cell *>(VideoMemory)
         + position.x + position.y * vga::ScreenSize.height;
 }
@@ -18,15 +18,15 @@ void vga::clear(vga::ColorPair color) {
     }
 }
 
-void vga::write(u8x2 position, array<u8> text, ColorPair color) {
+void vga::write(u8x2 position, slice<u8> text, ColorPair color) {
     u8x2 current_position = position;
-    for (u8 *character = text.base; character < text.base + text.capacity; character++) {
-        if (*character == '\n') {
+    for (u8 character : text) {
+        if (character == '\n') {
             current_position.x = position.x;
             current_position.y++;
         } else {
             vga::Cell *cell = vga::cell(current_position);
-            cell->character = *character;
+            cell->character = character;
             cell->color = color;
             current_position.x++;
         }

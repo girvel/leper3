@@ -12,6 +12,6 @@ void run() {
     vga::clear(terminal);
 
     u8 content[] = "Hello, world!";
-    array<u8> text = {.base = content, .capacity = 13};
+    slice<u8> text = {.base = content, .capacity = 13};
     vga::write({2, 1}, text, terminal);
 }

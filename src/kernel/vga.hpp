@@ -1,7 +1,7 @@
 #include <modern.hpp>
 
 namespace vga {
-    constexpr Vector<u8, 2> ScreenSize(25, 80);
+    constexpr vector<u8, 2> ScreenSize(25, 80);
 
     namespace Color {
         enum : u8 {
@@ -36,6 +36,6 @@ namespace vga {
 
     Cell *cell(u8x2 position);
     void clear(ColorPair color);
-    void write(u8x2 position, array<u8> string, ColorPair color);
+    void write(u8x2 position, slice<u8> string, ColorPair color);
 }
 
