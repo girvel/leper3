@@ -57,3 +57,35 @@ struct Vector : public internal::VectorStorage<T, Size> {
     constexpr T &operator[](address index) { return this->items[index]; }
     constexpr const T &operator[](address index) const { return this->items[index]; }
 };
+
+using u8x2 = Vector<u8, 2>;
+using u8x3 = Vector<u8, 3>;
+using u8x4 = Vector<u8, 4>;
+
+using u16x2 = Vector<u16, 2>;
+using u16x3 = Vector<u16, 3>;
+using u16x4 = Vector<u16, 4>;
+
+using u32x2 = Vector<u32, 2>;
+using u32x3 = Vector<u32, 3>;
+using u32x4 = Vector<u32, 4>;
+
+using u64x2 = Vector<u64, 2>;
+using u64x3 = Vector<u64, 3>;
+using u64x4 = Vector<u64, 4>;
+
+using i8x2 = Vector<i8, 2>;
+using i8x3 = Vector<i8, 3>;
+using i8x4 = Vector<i8, 4>;
+
+using i16x2 = Vector<i16, 2>;
+using i16x3 = Vector<i16, 3>;
+using i16x4 = Vector<i16, 4>;
+
+using i32x2 = Vector<i32, 2>;
+using i32x3 = Vector<i32, 3>;
+using i32x4 = Vector<i32, 4>;
+
+using i64x2 = Vector<i64, 2>;
+using i64x3 = Vector<i64, 3>;
+using i64x4 = Vector<i64, 4>;

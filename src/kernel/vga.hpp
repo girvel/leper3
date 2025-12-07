@@ -34,7 +34,8 @@ namespace vga {
         ColorPair color;
     };
 
-    Cell *cell(Vector<u8, 2> position);
+    Cell *cell(u8x2 position);
     void clear(ColorPair color);
+    void write(u8x2 position, array<u8> string, ColorPair color);
 }
 

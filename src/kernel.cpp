@@ -10,7 +10,8 @@ extern "C" [[noreturn]] int main() {
 void run() {
     vga::ColorPair terminal = vga::make_color(vga::Color::White, vga::Color::Blue);
     vga::clear(terminal);
-    vga::Cell *zero = vga::cell({0, 0});
-    zero->character = '+';
-    zero->color = terminal;
+
+    u8 content[] = "Hello, world!";
+    array<u8> text = {.base = content, .capacity = 13};
+    vga::write({2, 1}, text, terminal);
 }
