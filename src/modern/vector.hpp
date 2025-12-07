@@ -47,10 +47,10 @@ namespace internal {
 
 template<typename T, address Size>
 struct Vector : public internal::VectorStorage<T, Size> {
-    constexpr Vector() : internal::VectorStorage<T, Size>{ {0} } {}
+    constexpr Vector() : internal::VectorStorage<T, Size>{ { {0} } } {}
 
     template <typename... Args>
-    constexpr Vector(Args... args) : internal::VectorStorage<T, Size>{static_cast<T>(args)...} {
+    constexpr Vector(Args... args) : internal::VectorStorage<T, Size>{ { {static_cast<T>(args)...} } } {
         static_assert(sizeof...(args) <= Size, "Too many arguments");
     }
 

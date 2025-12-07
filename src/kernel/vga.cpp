@@ -5,6 +5,7 @@ namespace {
 };
 
 vga::Cell *vga::cell(Vector<u8, 2> position) {
-    return (vga::Cell *)VideoMemory + position.x * vga::ScreenSize.width + position.y;
+    return reinterpret_cast<vga::Cell *>(VideoMemory)
+        + position.x * vga::ScreenSize.width + position.y;
 }
 

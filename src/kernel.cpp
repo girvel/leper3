@@ -1,8 +1,8 @@
 void run();
 
-extern "C" int main() {
+extern "C" [[noreturn]] int main() {
     run();
-    return 0;
+    while (true) { __asm__ volatile ("hlt"); }
 }
 
 #include "kernel/vga.hpp"
@@ -10,5 +10,5 @@ extern "C" int main() {
 void run() {
     vga::Cell *zero = vga::cell({0, 0});
     zero->character = '+';
-    zero->color = vga::FgWhite | vga::BgBlue;
+    zero->color = vga::make_color(vga::Color::White, vga::Color::Blue);
 }
