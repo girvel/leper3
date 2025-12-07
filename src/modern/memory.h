@@ -13,7 +13,8 @@ typedef struct {
 #define null ((Fat) {0})
 #define is_null(X) ((X).base == 0)
 
-#define fat(TYPE) struct { TYPE *base; address length; }
+#define array(TYPE) struct { TYPE *base; address length; }
+#define list(TYPE) struct { TYPE *base; address length; address size; }
 
 #define def_region(TYPE, NAME, ...) \
     __typeof__ (*((TYPE) {}).base) concat3(_, NAME, _base)[] = __VA_ARGS__; \

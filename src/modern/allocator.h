@@ -47,10 +47,10 @@ typedef struct {
     extend_exact(extend__fatter, (ALLOCATOR), new_length); \
 } while (0)
 
-#define append(LIST, ALLOCATOR, ELEMENT) do { \
+#define append(LIST, ALLOCATOR, ...) do { \
     __typeof__ (LIST) append__list = (LIST); \
     __typeof__ (ALLOCATOR) append__allocator = (ALLOCATOR); \
-    __typeof__ (ELEMENT) append__element = (ELEMENT); \
+    __typeof__ (__VA_ARGS__) append__element = (__VA_ARGS__); \
     if (append__list->size >= append__list->length) { \
         extend_exact(append__list, append__allocator, append__list->length == 0 ? 16 : append__list->length * 2); \
     } \
