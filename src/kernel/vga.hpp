@@ -36,6 +36,6 @@ namespace vga {
 
     Cell *cell(u8x2 position);
     void clear(ColorPair color);
-    void write(u8x2 position, slice<u8> string, ColorPair color);
+    void write(u8x2 position, string text, ColorPair color);
 }
 

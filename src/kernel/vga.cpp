@@ -18,7 +18,7 @@ void vga::clear(vga::ColorPair color) {
     }
 }
 
-void vga::write(u8x2 position, slice<u8> text, ColorPair color) {
+void vga::write(u8x2 position, string text, ColorPair color) {
     u8x2 current_position = position;
     for (u8 character : text) {
         if (character == '\n') {

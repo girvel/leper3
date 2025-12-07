@@ -11,7 +11,5 @@ void run() {
     vga::ColorPair terminal = vga::make_color(vga::Color::White, vga::Color::Blue);
     vga::clear(terminal);
 
-    u8 content[] = "Hello, world!";
-    slice<u8> text = {.base = content, .capacity = 13};
-    vga::write({2, 1}, text, terminal);
+    vga::write({2, 1}, "Hello, world!", terminal);
 }
