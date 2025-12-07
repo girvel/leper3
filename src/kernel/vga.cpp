@@ -1,4 +1,5 @@
 #include "vga.hpp"
+#include "io.hpp"
 
 namespace {
     constexpr address VideoMemory = 0xb8000;
@@ -31,4 +32,16 @@ void vga::write(u8x2 position, string text, ColorPair color) {
             current_position.x++;
         }
     }
+}
+
+void vga::cursor_move(u8x2 position) {
+    u16 index = position.y * vga::ScreenSize.height + position.x;
+
+    // send low byte
+    io::write(0x3D4, 0x0F);
+    io::write(0x3D5, (u8) (index & 0xFF));
+
+    // send high byte
+    io::write(0x3D4, 0x0E);
+    io::write(0x3D5, (u8) ((index >> 8) & 0xFF));
 }

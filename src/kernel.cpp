@@ -12,4 +12,5 @@ void run() {
     vga::clear(terminal);
 
     vga::write({2, 1}, "Hello, world!", terminal);
+    vga::cursor_move({0, 0});
 }
