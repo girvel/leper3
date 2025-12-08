@@ -1,7 +1,9 @@
 #pragma once
 
-#include "modern/integer.hpp"
-#include "modern/vector.hpp"
-#include "modern/slice.hpp"
-#include "modern/string.hpp"
-#include "modern/math.hpp"
+#include "modern/integer.hpp"   // IWYU pragma: export
+#include "modern/vector.hpp"    // IWYU pragma: export
+#include "modern/slice.hpp"     // IWYU pragma: export
+#include "modern/string.hpp"    // IWYU pragma: export
+#include "modern/math.hpp"      // IWYU pragma: export
+#include "modern/allocator.hpp" // IWYU pragma: export
+#include "modern/bytes.hpp"     // IWYU pragma: export

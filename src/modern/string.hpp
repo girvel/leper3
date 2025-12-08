@@ -11,6 +11,8 @@ namespace internal {
 };
 
 struct string : public slice<u8> {
+    using slice<u8>::slice;
+
     template<typename CharType>
     string(CharType *source) : slice<u8>(
         reinterpret_cast<u8 *>(source),

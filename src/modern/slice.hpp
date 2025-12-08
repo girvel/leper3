@@ -4,8 +4,12 @@
 
 template<typename T>
 struct slice {
+    using Base = T;
+
     T *base;
     address capacity;
+
+    slice(T *base, address capacity) : base(base), capacity(capacity) {}
 
     T &operator[](address index) {
         // TODO assert here

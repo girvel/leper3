@@ -1,6 +1,6 @@
 #!/usr/bin/env luajit
 
-local sources = {"kernel.cpp", "kernel/vga.cpp", "kernel/tty.cpp"}
+local sources = {"kernel.cpp", "kernel/vga.cpp", "kernel/tty.cpp", "kernel/allocation/arena.cpp"}
 
 --- @param cmd string
 --- @param ... any
@@ -24,6 +24,7 @@ end
 
 cmd("mkdir -p .build")
 cmd("mkdir -p .build/kernel")
+cmd("mkdir -p .build/kernel/allocation")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")
 -- cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
 
