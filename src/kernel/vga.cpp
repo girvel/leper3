@@ -27,9 +27,7 @@ void vga::write(u8x2 position, string text, ColorPair color) {
             current_position.x = position.x;
             current_position.y++;
         } else {
-            auto cell_maybe = vga::cell(current_position);
-            if (cell_maybe) {
-                auto cell = cell_maybe.unwrap();
+            if (auto cell = vga::cell(current_position).check()) {
                 cell->character = character;
                 cell->color = color;
             }
