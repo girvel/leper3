@@ -9,7 +9,7 @@ void tty::clear() {
 
     for (u8 x = 0; x < vga::ScreenSize.width; x++) {
     for (u8 y = 0; y < vga::ScreenSize.height; y++) {
-        vga::Cell *cell = vga::cell({x, y});
+        vga::Cell *cell = vga::cell({x, y}).unwrap();
         if (x == 0) {
             if (y == 0) cell->character = 0xC9;
             else if (y == vga::ScreenSize.height - 1) cell->character = 0xC8;
@@ -42,11 +42,11 @@ void tty::write(string str) {
             } else {
                 pos.x--;
             }
-            vga::cell(pos)->character = ' ';
+            vga::cell(pos).unwrap()->character = ' ';
         } else {
-            vga::cell(pos)->character = character;
+            vga::cell(pos).unwrap()->character = character;
             pos.x++;
-            if (pos.x >= vga::ScreenSize.height - 4) {
+            if (pos.x >= vga::ScreenSize.width - 4) {
                 pos.x = 2;
                 pos.y++;
             }

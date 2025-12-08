@@ -8,3 +8,4 @@
 #include "modern/allocator.hpp" // IWYU pragma: export
 #include "modern/bytes.hpp"     // IWYU pragma: export
 #include "modern/assert.hpp"    // IWYU pragma: export
+#include "modern/option.hpp"    // IWYU pragma: export

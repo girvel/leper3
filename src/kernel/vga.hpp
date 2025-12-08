@@ -36,7 +36,7 @@ namespace vga {
         ColorPair color;
     };
 
-    Cell *cell(u8x2 position);
+    option<Cell *> cell(u8x2 position);
     void clear(ColorPair color);
     void write(u8x2 position, string text, ColorPair color);
     void cursor_move(u8x2 position);
