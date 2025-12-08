@@ -7,3 +7,4 @@
 #include "modern/math.hpp"      // IWYU pragma: export
 #include "modern/allocator.hpp" // IWYU pragma: export
 #include "modern/bytes.hpp"     // IWYU pragma: export
+#include "modern/assert.hpp"    // IWYU pragma: export

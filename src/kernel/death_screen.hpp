@@ -2,5 +2,5 @@
 #include "modern.hpp"
 
 namespace death_screen {
-    void show(string message);
+    [[noreturn]] void show(string message);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "integer.hpp"
+#include "assert.hpp"
 
 template<typename T>
 struct slice {
@@ -12,12 +13,12 @@ struct slice {
     slice(T *base, address capacity) : base(base), capacity(capacity) {}
 
     T &operator[](address index) {
-        // TODO assert here
+        massert(index < this->capacity);
         return this->base[index];
     }
 
     const T &operator[](address index) const {
-        // TODO assert here
+        massert(index < this->capacity);
         return this->base[index];
     }
 

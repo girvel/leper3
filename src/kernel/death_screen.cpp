@@ -9,4 +9,5 @@ void death_screen::show(string message) {
 
     // TODO keyboard
     vga::write({2, vga::ScreenSize.height - 2}, "Press [Enter] to reboot...", red);
+    while (true) { __asm__ volatile ("hlt"); }
 }
