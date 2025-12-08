@@ -22,13 +22,7 @@ void run() {
     buffer<128> buf;
     allocation::Arena arena(buf.to_slice());
 
-    u8 input; while (true) {
-        if (auto in = kb::read().check()) {
-            input = *in;
-            break;
-        }
-    }
-
+    u8 input = kb::read_blocking();
     string str(&input, 1);
     tty::write(str);
 

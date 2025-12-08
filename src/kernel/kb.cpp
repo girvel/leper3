@@ -25,3 +25,9 @@ option<u8> kb::read() {
     u8 scancode = try(kb::read_scancode());
     return scancode_map[scancode];
 }
+
+u8 kb::read_blocking() {
+    while (true) {
+        if (auto in = kb::read().check()) return *in;
+    }
+}
