@@ -8,6 +8,7 @@ extern "C" [[noreturn]] int main() {
 #include "kernel/tty.hpp"
 #include "kernel/allocation.hpp"
 #include "kernel/death_screen.hpp"
+#include "kernel/kb.hpp"
 
 extern "C" void __cxa_pure_virtual() {
     death_screen::show("Vtable error: virtual method not found");
@@ -21,9 +22,21 @@ void run() {
     buffer<128> buf;
     allocation::Arena arena(buf.to_slice());
 
-    auto str = arena.allocate_slice<string>(3);
-    str[0] = '.';
-    str[1] = '.';
-    str[2] = '.';
+    u8 input; while (true) {
+        if (auto in = kb::read().check()) {
+            input = *in;
+            break;
+        }
+    }
+
+    string str(&input, 1);
     tty::write(str);
+
+    // list<cmd> command(&arena);
+    // while (true) {
+    //     command.clear();
+
+    //     tty::write("> ");
+    //     command.push(
+    // }
 }

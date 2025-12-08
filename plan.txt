@@ -1,7 +1,7 @@
 + allocator
 + arena
 + build system
-- death screen
++ death screen
 - list
 - heap
 - unique pointer
