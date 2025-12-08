@@ -11,19 +11,10 @@ extern "C" void __cxa_pure_virtual() {
 }
 
 #include "kernel/tty.hpp"
-#include "kernel/allocation.hpp"
+#include "kernel/death_screen.hpp"
 
 void run() {
     tty::clear();
     tty::write("Hello, world!\n");
-
-    static_bytes<128> region;
-    allocation::Arena arena(region.to_slice());
-
-    auto str = arena.allocate<string>(3);
-    str[0] = '.';
-    str[1] = '.';
-    str[2] = '.';
-    tty::write(str);
-    arena.deallocate(str);
+    death_screen::show("Just testing.");
 }
