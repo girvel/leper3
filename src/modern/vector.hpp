@@ -66,6 +66,9 @@ struct vector : public internal::VectorStorage<T, Size> {
     }
 };
 
+template<typename Head, typename ...Tail>
+vector(Head, Tail...) -> vector<Head, 1 + sizeof...(Tail)>;
+
 template<address Size>
 using buffer = vector<u8, Size>;
 
