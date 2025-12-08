@@ -11,6 +11,7 @@ struct slice {
     address size;
 
     slice(T *base, address size) : base(base), size(size) {}
+    slice(T *base) : base(base), size(1) {}
 
     T &operator[](address index) {
         massert(index < this->size && "slice index overflow");

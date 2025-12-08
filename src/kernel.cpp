@@ -23,7 +23,7 @@ void run() {
     allocation::Arena arena(buf.to_slice());
 
     u8 input = kb::read_blocking();
-    string str(&input, 1);
+    string str(&input);
     tty::write(str);
 
     // list<cmd> command(&arena);
