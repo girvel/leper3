@@ -1,6 +1,7 @@
 #pragma once
 
 #include "integer.hpp"
+#include "slice.hpp"
 
 namespace internal {
     template<typename T, address Size>
@@ -56,7 +57,14 @@ struct vector : public internal::VectorStorage<T, Size> {
 
     constexpr T &operator[](address index) { return this->items[index]; }
     constexpr const T &operator[](address index) const { return this->items[index]; }
+
+    constexpr slice<T> to_slice() {
+        return slice<T>(this->items, Size);
+    }
 };
+
+template<address Size>
+using static_bytes = vector<u8, Size>;
 
 using u8x2 = vector<u8, 2>;
 using u8x3 = vector<u8, 3>;

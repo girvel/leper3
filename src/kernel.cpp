@@ -17,9 +17,8 @@ void run() {
     tty::clear();
     tty::write("Hello, world!\n");
 
-    u8 region[128];
-    bytes region_bytes(region, 128);
-    allocation::Arena arena(region_bytes);
+    static_bytes<128> region;
+    allocation::Arena arena(region.to_slice());
 
     auto str = arena.allocate<string>(3);
     str[0] = '.';
