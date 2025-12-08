@@ -46,6 +46,9 @@ namespace internal {
 
 }
 
+/// Algebraic vector: constexpr size.
+///
+/// Modern does not continue C++'s confusing "vector is a dynamic array" naming, vector is a vector.
 template<typename T, address Size>
 struct vector : public internal::VectorStorage<T, Size> {
     constexpr vector() : internal::VectorStorage<T, Size>{ { {0} } } {}
@@ -64,7 +67,7 @@ struct vector : public internal::VectorStorage<T, Size> {
 };
 
 template<address Size>
-using static_bytes = vector<u8, Size>;
+using buffer = vector<u8, Size>;
 
 using u8x2 = vector<u8, 2>;
 using u8x3 = vector<u8, 3>;

@@ -18,7 +18,7 @@ void run() {
     tty::clear();
     tty::write("Hello, world!\n");
 
-    static_bytes<128> region;
+    buffer<128> region;
     allocation::Arena arena(region.to_slice());
 
     auto str = arena.allocate<string>(3);

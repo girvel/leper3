@@ -1,7 +1,7 @@
 #include "arena.hpp"
 
 void *allocation::Arena::allocate_raw(address bytes) {
-    if (this->size + bytes > this->base.capacity) {
+    if (this->size + bytes > this->base.size) {
         return 0; // TODO optional
     }
 

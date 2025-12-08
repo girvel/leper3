@@ -8,23 +8,23 @@ struct slice {
     using Base = T;
 
     T *base;
-    address capacity;
+    address size;
 
-    slice(T *base, address capacity) : base(base), capacity(capacity) {}
+    slice(T *base, address size) : base(base), size(size) {}
 
     T &operator[](address index) {
-        massert(index < this->capacity);
+        massert(index < this->size);
         return this->base[index];
     }
 
     const T &operator[](address index) const {
-        massert(index < this->capacity);
+        massert(index < this->size);
         return this->base[index];
     }
 
     T *begin() { return base; }
-    T *end() { return base + capacity; }
+    T *end() { return base + size; }
 
     const T *begin() const { return base; }
-    const T *end() const { return base + capacity; }
+    const T *end() const { return base + size; }
 };
