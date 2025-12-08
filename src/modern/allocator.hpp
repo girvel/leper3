@@ -4,8 +4,13 @@
 
 struct allocator {
     template <typename T>
-    inline T allocate(address capacity = 1) {
-        return T(reinterpret_cast<T::Base *>(allocate_raw(capacity * sizeof(T))), capacity);
+    inline T allocate_slice(address capacity) {
+        return T(reinterpret_cast<T::Base *>(allocate_raw(capacity * sizeof(T::Base))), capacity);
+    }
+
+    template <typename T>
+    inline T allocate() {
+        return reinterpret_cast<T *>(allocate_raw(sizeof(T)));
     }
 
     template <typename T>
