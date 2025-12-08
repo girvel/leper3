@@ -2,10 +2,15 @@
 
 #include "integer.hpp"
 
+template<typename T>
+concept SliceLike = requires {
+    typename T::Base;
+};
+
 struct allocator {
-    template <typename T>
+    template <SliceLike T>
     inline T allocate_slice(address capacity) {
-        return T(reinterpret_cast<T::Base *>(allocate_raw(capacity * sizeof(T::Base))), capacity);
+        return T(reinterpret_cast<T::Base *>(allocate_raw(capacity * sizeof(typename T::Base))), capacity);
     }
 
     template <typename T>
