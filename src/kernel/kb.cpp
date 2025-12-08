@@ -22,10 +22,6 @@ option<u8> kb::read_scancode() {
 }
 
 option<u8> kb::read() {
-    // TODO less ugly syntax
-    auto scancode_ok = kb::read_scancode().check();
-    if (!scancode_ok) return none;
-    u8 scancode = *scancode_ok;
-
+    u8 scancode = try(kb::read_scancode());
     return scancode_map[scancode];
 }

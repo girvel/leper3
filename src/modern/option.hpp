@@ -86,3 +86,9 @@ private:
     };
     bool has_value;
 };
+
+#define try(...) ({ \
+    auto __option = (__VA_ARGS__); \
+    if (!__option) return none; \
+    __option.unwrap(); \
+})
