@@ -12,6 +12,7 @@ struct slice {
 
     slice(T *base, address size) : base(base), size(size) {}
     slice(T *base) : base(base), size(1) {}
+    slice(): base(nullptr), size(0) {}
 
     T &operator[](address index) {
         massert(index < this->size && "slice index overflow");
@@ -28,4 +29,11 @@ struct slice {
 
     const T *begin() const { return base; }
     const T *end() const { return base + size; }
+
+    void copy(slice<T> destination) {
+        massert(destination.size >= this->size && "Attempt to copy into smaller slice");
+        for (address i = 0; i < this->size; i++) {
+            destination[i] = this->base[i];
+        }
+    }
 };

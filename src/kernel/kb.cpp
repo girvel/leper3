@@ -23,6 +23,7 @@ option<u8> kb::read_scancode() {
 
 option<u8> kb::read() {
     u8 scancode = try(kb::read_scancode());
+    if (scancode & 0x80) return none;
     return scancode_map[scancode];
 }
 

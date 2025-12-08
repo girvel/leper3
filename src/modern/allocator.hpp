@@ -14,13 +14,18 @@ struct allocator {
     }
 
     template <typename T>
-    inline T allocate() {
+    inline T *allocate() {
         return reinterpret_cast<T *>(allocate_raw(sizeof(T)));
     }
 
-    template <typename T>
-    inline void deallocate(T ref) {
+    template <SliceLike T>
+    inline void deallocate_slice(T ref) {
         deallocate_raw(ref.base);
+    }
+
+    template<typename T>
+    inline void deallocate(T *ref) {
+        deallocate_raw(ref);
     }
 
     virtual void *allocate_raw(address bytes) = 0;

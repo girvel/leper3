@@ -22,15 +22,18 @@ void run() {
     buffer<128> buf;
     allocation::Arena arena(buf.to_slice());
 
-    u8 input = kb::read_blocking();
-    string str(&input);
-    tty::write(str);
+    list<u8> command(&arena);
+    while (true) {
+        u8 character = kb::read_blocking();
+        if (character == '\n') break;
+        command.push(character);
+    }
+    tty::write(command.base);
 
-    // list<cmd> command(&arena);
     // while (true) {
     //     command.clear();
 
     //     tty::write("> ");
-    //     command.push(
+    //     command.extend(tty::read('\n'));
     // }
 }

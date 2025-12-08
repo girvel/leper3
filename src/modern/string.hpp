@@ -17,4 +17,6 @@ struct string : public slice<u8> {
         const_cast<u8 *>(reinterpret_cast<const u8 *>(source)),
         internal::c_string_length(reinterpret_cast<const u8 *>(source))
     ) {}
+
+    string(slice<u8> source) : slice<u8>(source.base, source.size) {}
 };
