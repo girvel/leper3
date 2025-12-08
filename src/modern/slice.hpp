@@ -13,12 +13,12 @@ struct slice {
     slice(T *base, address size) : base(base), size(size) {}
 
     T &operator[](address index) {
-        massert(index < this->size);
+        massert(index < this->size && "slice index overflow");
         return this->base[index];
     }
 
     const T &operator[](address index) const {
-        massert(index < this->size);
+        massert(index < this->size && "slice index overflow");
         return this->base[index];
     }
 
