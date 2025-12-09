@@ -27,14 +27,7 @@ void run() {
         tty::write(command);
         tty::write("\n");
 
-        auto n = arena.size;
-        list<u8> repr(&arena);
-        do {
-            repr.push('0' + n % 10);
-            n /= 10;
-        } while (n != 0);
-        repr.base.reverse();
-        tty::write(repr.base);
+        tty::write(conv::from_int(arena.size, &arena));
         tty::write("\n");
     }
 }

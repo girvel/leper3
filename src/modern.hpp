@@ -11,3 +11,4 @@
 #include "modern/option.hpp"    // IWYU pragma: export
 #include "modern/list.hpp"      // IWYU pragma: export
 #include "modern/concepts.hpp"  // IWYU pragma: export
+#include "modern/conv.hpp"      // IWYU pragma: export
