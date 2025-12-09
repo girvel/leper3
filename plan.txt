@@ -2,7 +2,12 @@
 + arena
 + build system
 + death screen
-- list
-- heap
++ list
++ asserts
+
++ display arena size
+- reallocation optimization
+- deallocation for arena
 - unique pointer
-- asserts
+
+- heap
