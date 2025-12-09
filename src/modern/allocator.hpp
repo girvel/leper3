@@ -1,6 +1,7 @@
 #pragma once
 
 #include "integer.hpp"
+#include "option.hpp"
 
 template<typename T>
 concept SliceLike = requires {
@@ -9,13 +10,20 @@ concept SliceLike = requires {
 
 struct allocator {
     template <SliceLike T>
-    inline T allocate_slice(address capacity) {
-        return T(reinterpret_cast<T::Base *>(allocate_raw(capacity * sizeof(typename T::Base))), capacity);
+    inline T allocate_slice(address capacity, option<T> prev = none) {
+        auto prev_ptr = prev.map([](T x) { return x.base; });
+
+        return T(
+            reinterpret_cast<T::Base *>(
+                allocate_raw(capacity * sizeof(typename T::Base), prev_ptr)
+            ),
+            capacity
+        );
     }
 
     template <typename T>
-    inline T *allocate() {
-        return reinterpret_cast<T *>(allocate_raw(sizeof(T)));
+    inline T *allocate(option<T *> prev = none) {
+        return reinterpret_cast<T *>(allocate_raw(sizeof(T), prev));
     }
 
     template <SliceLike T>
@@ -28,7 +36,7 @@ struct allocator {
         deallocate_raw(ref);
     }
 
-    virtual void *allocate_raw(address bytes) = 0;
+    virtual void *allocate_raw(address bytes, option<void *> prev = none) = 0;
     virtual void deallocate_raw(void *base) = 0;
 };
 

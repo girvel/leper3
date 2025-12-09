@@ -8,7 +8,7 @@ namespace allocation {
 
         Arena(bytes base) : base(base), size(0) {};
 
-        void *allocate_raw(address bytes) override;
+        void *allocate_raw(address bytes, option<void *> prev = none) override;
         void deallocate_raw(void *_) override;
     };
 }

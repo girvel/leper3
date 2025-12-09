@@ -61,6 +61,8 @@ constexpr NoneType none = {};
 
 template<typename T>
 struct option {
+    template<typename U> friend struct option;
+
     option(const T &value) : value(value), has_value(true) {}
     option(const NoneType): no_value(none), has_value(false) {}
 
@@ -82,6 +84,17 @@ struct option {
     inline internal::checked_option<T> check() {
         if (!this->has_value) return {.value = {}, .has_value = false};
         return {.value = this->value, .has_value = true};
+    }
+
+    template<typename Func>
+    auto map(Func f) const {
+        using R = decltype(f(value));
+
+        if (has_value) {
+            return option<R>(f(value));
+        } else {
+            return option<R>(none);
+        }
     }
 
     operator bool() {
