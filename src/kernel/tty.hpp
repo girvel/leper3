@@ -8,4 +8,5 @@ namespace tty {
 
     void clear();
     void write(string str);
+    string read(allocator *alloc, u8 end);
 }

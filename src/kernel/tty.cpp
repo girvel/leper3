@@ -1,4 +1,5 @@
 #include "tty.hpp"
+#include "kernel/kb.hpp"
 
 namespace {
     u8x2 pos;
@@ -53,5 +54,32 @@ void tty::write(string str) {
         }
     }
     vga::cursor_move(pos);
+}
+
+string tty::read(allocator *alloc, u8 end) {
+    vga::cursor_visible(true);
+
+    list<u8> result(alloc);
+    while (true) {
+        option<u8> character_maybe = kb::read();
+        if (!character_maybe) continue;
+        u8 character = character_maybe.unwrap();
+
+        if (character == '\b') {
+            if (result.base.size > 0) {
+                result.base.size--;
+                tty::write(&character);
+            }
+            continue;
+        }
+
+        tty::write(&character);
+        if (character == end) break;
+
+        result.push(character);
+    }
+
+    vga::cursor_visible(false);
+    return result.base;
 }
 

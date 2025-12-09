@@ -1,5 +1,6 @@
 #pragma once
 #include "assert.hpp"
+#include "concepts.hpp"
 
 
 namespace internal {
@@ -61,8 +62,16 @@ constexpr NoneType none = {};
 template<typename T>
 struct option {
     option(const T &value) : value(value), has_value(true) {}
-    option(NoneType value) : no_value(none), has_value(false) {
-        (void)value;
+    option(const NoneType): no_value(none), has_value(false) {}
+
+    template<typename U>
+    requires ConvertibleTo<U, T>
+    option(const option<U> &other) : has_value(other.has_value) {
+        if (has_value) {
+            new (&value) T(other.value);
+        } else {
+            no_value = none;
+        }
     }
 
     inline const T &unwrap() {
@@ -78,6 +87,20 @@ struct option {
     operator bool() {
         return this->has_value;
     }
+
+    bool operator ==(NoneType) { return !this->has_value; }
+
+    template<typename U>
+    requires Eq<T, U>
+    bool operator ==(const option<U> &other) {
+        if (this->has_value != other.has_value) return false;
+        if (!has_value) return true;
+        return value == other.value;
+    }
+
+    template<typename U>
+    requires Eq<T, U>
+    bool operator ==(const U &other) { return this->has_value && this->value == other; }
 
 private:
     union {
