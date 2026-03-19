@@ -1,178 +1,27 @@
 #!/usr/bin/env luajit
 
-local parameters = {
-  source_folder = "src",
-  bootloader = "src/boot.asm",
-  kernel = "src/kernel.cpp",
-  flags = "compile_flags.txt",
-}
-
-----------------------------------------------------------------------------------------------------
--- [SECTION] Tools
-----------------------------------------------------------------------------------------------------
-
---- @param str string
---- @param pat string
---- @param plain boolean?
---- @return string[]
-local split = function(str, pat, plain)
-  local t = {}
-
-  while true do
-    local pos1, pos2 = str:find(pat, 1, plain or false)
-
-    if not pos1 or pos1 > pos2 then
-      t[#t + 1] = str
-      return t
-    end
-
-    t[#t + 1] = str:sub(1, pos1 - 1)
-    str = str:sub(pos2 + 1)
-  end
-end
-
---- @param str string
---- @param postfix string
---- @return boolean
-local ends_with = function(str, postfix)
-  return str:sub(-#postfix, -1) == postfix
-end
-
---- @alias log_f fun(fmt: string, ...: any)
---- @class log
---- @field cmd log_f
---- @field info log_f
---- @field error log_f
-
---- @type log
-local log = setmetatable({}, {
-  __index = function(self, level)
-    return function(fmt, ...)
-      print("[" .. level:upper() .. "]", fmt:format(...))
-    end
-  end
-})
-
---- @param command string
+--- @param cmd string
 --- @param ... any
-local cmd = function(command, ...)
-  command = command:format(...)
+local cmd = function(cmd, ...)
+  cmd = cmd:format(...)
 
-  log.cmd(command)
-  local code = os.execute(command)
+  print("[CMD]", cmd)
+  local code = os.execute(cmd)
 
   if code ~= 0 then
-    log.error("Exited with code %s", code)
+    print("[ERROR] Exited with code", code)
     os.exit(1)
   end
 end
 
---- @param command string
---- @param ... any
---- @return string
-local cmd_read = function(command, ...)
-  local f = assert(io.popen("zsh -c '" .. command:format(...) .. "'"))
-  local result = f:read("*a")
-  f:close()
+cmd("mkdir -p .build")
+cmd("nasm -f bin boot.asm -o .build/boot.bin")
+cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
+cmd("gcc -ffreestanding -m32 -fno-pie -c src/kernel.c -o .build/kernel.o")
+cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/isr.o")
 
-  if result:sub(-1, -1) == "\n" then
-    result = result:sub(1, -2)
-  end
-  return result
-end
-
---- @param path string
---- @return string
-local read_file = function(path)
-  local f = assert(io.open(path, "r"))
-  local result = f:read("*a"):gsub("\n", " ")
-  f:close()
-  return result
-end
-
---- @param source string
---- @param flags string
---- @return string
-local gcc = function(source, flags)
-  local object_file = ".build/" .. source:sub(1, -5) .. ".o"
-  cmd("g++ %s -c %s -o %s", flags, source, object_file)
-  return object_file
-end
-
---- @param source string
---- @param format "bin"|"elf32"
---- @return string
-local nasm = function(source, format)
-  local object_file = ".build/" .. source:sub(1, -5) .. (format == "bin" and ".bin" or ".o")
-  cmd("nasm -f %s %s -o %s", format, source, object_file)
-  return object_file
-end
-
-----------------------------------------------------------------------------------------------------
--- [SECTION] Steps
-----------------------------------------------------------------------------------------------------
-
---- @param folder string
---- @return string[]
-local discover_sources = function(folder)
-  log.info("Discovering source files...")
-  return split(cmd_read("ls %s/**/*.{cpp,asm}", folder), "\n", true)
-end
-
---- @param sources string[]
-local create_build_directories = function(sources)
-  log.info("Creating build directories...")
-  local seen = {}
-  for _, path in ipairs(sources) do
-    local base = path:match("^(.*)/[^/]+$")
-    if not seen[base] then
-      cmd("mkdir -p .build/%s", base)
-      seen[base] = true
-    end
-  end
-end
-
---- @param sources string[]
---- @param flags string
---- @param kernel string
---- @param bootloader string
---- @return string, string[]
-local compile_sources = function(sources, flags, kernel, bootloader)
-  log.info("Compiling sources...")
-
-  local kernel_out
-  local object_files = {}
-  for _, source in ipairs(sources) do
-    if ends_with(source, ".cpp") then
-      local file = gcc(source, flags)
-      if source == kernel then
-        kernel_out = file
-      else
-        table.insert(object_files, file)
-      end
-    elseif source ~= bootloader then
-      table.insert(object_files, nasm(source, "elf32"))
-    else
-      nasm(source, "bin")
-    end
-  end
-  return kernel_out, object_files
-end
-
---- @param kernel string
---- @param object_files string[]
-local link = function(kernel, object_files)
-  log.info("Linking...")
-  cmd(
-    "ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 %s %s",
-    kernel,
-    table.concat(object_files, " ")
-  )
-end
-
-local write_image = function()
-  log.info("Writing the OS image...")
-
+-- cmd("cat .build/boot.bin .build/kernel.bin > .build/leper3.bin")
+do
   local SECTOR_SIZE = 512
   local KERNEL_MAX_SIZE = 50 * SECTOR_SIZE
   local NORMAL_SIZE = 10 * 1024 * 1024
@@ -200,17 +49,4 @@ local write_image = function()
   leper3_bin:close()
 end
 
-local run_image = function()
-  cmd("qemu-system-x86_64 -drive format=raw,file=.build/leper3.bin")
-end
-
-----------------------------------------------------------------------------------------------------
--- [SECTION] Main
-----------------------------------------------------------------------------------------------------
-
-local sources = discover_sources(parameters.source_folder)
-create_build_directories(sources)
-local kernel, objects = compile_sources(sources, read_file(parameters.flags), parameters.kernel, parameters.bootloader)
-link(kernel, objects)
-write_image()
-run_image()
+cmd("qemu-system-x86_64 -drive format=raw,file=.build/leper3.bin")
