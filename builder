@@ -103,7 +103,7 @@ end
 --- @param format "bin"|"elf32"
 --- @return string
 local nasm = function(source, format)
-  local object_file = ".build/" .. source:sub(1, -3) .. (format == "bin" and ".bin" or ".o")
+  local object_file = ".build/" .. source:sub(1, -5) .. (format == "bin" and ".bin" or ".o")
   cmd("nasm -f %s %s -o %s", format, source, object_file)
   return object_file
 end

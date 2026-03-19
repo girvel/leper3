@@ -81,6 +81,14 @@ struct option {
         return this->value;
     }
 
+    template<typename U>
+    requires ConvertibleTo<U, T>
+    T unwrap_or(U &&fallback) const {
+        return this->has_value
+            ? this->value
+            : static_cast<T>(fallback);
+    }
+
     inline internal::checked_option<T> check() {
         if (!this->has_value) return {.value = {}, .has_value = false};
         return {.value = this->value, .has_value = true};

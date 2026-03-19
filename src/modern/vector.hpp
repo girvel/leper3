@@ -50,7 +50,10 @@ namespace internal {
 ///
 /// Modern does not continue C++'s confusing "vector is a dynamic array" naming, vector is a vector.
 template<typename T, address Size>
-struct vector : public internal::VectorStorage<T, Size> {
+struct vector :
+    public internal::VectorStorage<T, Size>,
+    public modern::SliceTrait<vector<T, Size>, T>
+{
     constexpr vector() : internal::VectorStorage<T, Size>{ { {0} } } {}
 
     template<typename... Args>
@@ -58,12 +61,13 @@ struct vector : public internal::VectorStorage<T, Size> {
         static_assert(sizeof...(args) <= Size, "Too many arguments");
     }
 
-    constexpr T &operator[](address index) { return this->items[index]; }
-    constexpr const T &operator[](address index) const { return this->items[index]; }
-
     constexpr slice<T> to_slice() {
         return slice<T>(this->items, Size);
     }
+
+    constexpr T *ptr() { return this->items; }
+    constexpr const T *ptr() const { return this->items; }
+    constexpr address len() const { return Size; }
 };
 
 template<typename Head, typename ...Tail>

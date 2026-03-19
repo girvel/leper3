@@ -1,4 +1,4 @@
-#include "kernel/death_screen.hpp"
+#include "death_screen.hpp"
 #include "kernel/vga.hpp"
 
 void death_screen::show(string message) {
