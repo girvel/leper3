@@ -13,7 +13,13 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 ### Stage 1: remove "modern" from all the modules
 
 - [x] idt.c
-- [ ] ...
+- [ ] string.c
+- [ ] clock.c
+- [ ] io.c
+- [ ] kb.c
+- [ ] power.c
+- [ ] random.c
+- [ ] kernel.c
 
 ### Stage 2: restructure the project
 

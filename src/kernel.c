@@ -1,12 +1,13 @@
-void run();
+void main();
 
 // NOTICE: should come first!
-int main() {
-    run();
+int entrypoint() {
+    main();
     while(1);
     return 0;
 }
 
+#include "string.c"
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"
@@ -17,7 +18,7 @@ int main() {
 #include "modern/memory.h"
 #include "modern/allocator.h"
 
-void run() {
+void main() {
     page_init();
     idt_init();
     vmm_init();
