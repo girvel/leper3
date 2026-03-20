@@ -53,6 +53,31 @@ vga_Cell *vga_cell(u8_2 position) {
     return &no_cell;
 }
 
+vga_Cell *vga_cell_(u8 x, u8 y) {
+    if (x < VGA_VIDEO_MEMORY_W && y < VGA_VIDEO_MEMORY_H) {
+        vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
+        return video_memory + y * VGA_VIDEO_MEMORY_W + x;
+    }
+
+    return &no_cell;
+}
+
+void vga_write_(u8 x, u8 y, const u8 *str, vga_Color color) {
+    u8 current_x = x;
+    u8 current_y = y;
+    for (const u8 *ch = str; *ch; ch++) {
+        if (*ch == '\n') {
+            current_x = x;
+            current_y++;
+        } else {
+            vga_Cell *cell = vga_cell_(current_x, current_y);
+            cell->character = *ch;
+            cell->color = color;
+            current_x++;
+        }
+    }
+}
+
 void vga_write(u8_2 position, String str, vga_Color color) {
     u8_2 current_position = position;
     foreach (u8 *, character, &str) {

@@ -3,8 +3,6 @@
 #pragma once
 
 #include "modern/integer.h"
-#include "modern/string.h"
-#include "modern/memory.h"
 #include "vga.c"
 #include "arena.c"
 #include "kb.c"
@@ -39,7 +37,7 @@ __attribute__ ((aligned(0x10)))
 static idt_Entry idt[256];
 static idt_Ptr idt_ptr;
 
-void _idt_set_gate(u8 index, u32 base, u16 sel, u8 flags) {
+static void _idt_set_gate(u8 index, u32 base, u16 sel, u8 flags) {
     idt[index].offset_low = base & 0xFFFF;
     idt[index].offset_high = (base >> 16) & 0xFFFF;
     idt[index].selector = sel;
@@ -66,46 +64,114 @@ void idt_init() {
     __asm__ volatile("lidt %0" : : "m"(idt_ptr));
 }
 
-def_region(StringArray, _idt_interrupt_descriptions, {
-    literal("Division by zero"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("Invalid Opcode: CPU attempted to execute garbage data"),
-    literal("<unknown>"),
-    literal("Double Fault: Error inside the error handler"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("<unknown>"),
-    literal("General Protection Fault: Permission violations"),
-    literal("Page Fault: Attempting to access invalid memory"),
-});
+#define LEN(X) sizeof(X) / sizeof(*X)
 
-void idt_handler(isr_Registers *registers) {
-    static_region(String, arena_base, 1024);
-    Arena _arena = fat_cast(Arena, arena_base);
-    Allocator arena = arena_get_allocator(&_arena);
+static const char *_idt_interrupt_descriptions[] = {
+    "Division by zero",
+    "<unknown>",
+    "<unknown>",
+    "<unknown>",
+    "<unknown>",
+    "<unknown>",
+    "Invalid Opcode: CPU attempted to execute garbage data",
+    "<unknown>",
+    "Double Fault: Error inside the error handler",
+    "<unknown>",
+    "<unknown>",
+    "<unknown>",
+    "<unknown>",
+    "General Protection Fault: Permission violations",
+    "Page Fault: Attempting to access invalid memory",
+};
 
-    vga_Color red = vga_Color_bg_red | vga_Color_fg_white;
-    vga_clear(red);
-    vga_write((u8_2) {2, 1}, literal("RED DEATH SCREEN"), red);
+address str_write_signed(u8 *dest, address cap, i32 integer) {
+    address initial_cap = cap;
+    if (cap < 2) return 0;
 
-    DynamicString report = {0};
-    string_format(
-        &report, &arena, literal("Interrupt: %i, error code: %i"),
-        registers->int_no, registers->err_code
-    );
-    vga_write((u8_2) {2, 2}, to_fat(String, report), red);
-
-    String *description = at(_idt_interrupt_descriptions, registers->int_no);
-    if (description) {
-        vga_write((u8_2) {2, 3}, *description, red);
+    if (integer < 0) {
+        *dest = '-';
+        dest++; cap--;
+        integer *= -1;
     }
 
-    vga_write((u8_2) {2, VGA_VIDEO_MEMORY_H - 2}, literal("Press [Enter] to reboot..."), red);
+    u8 *before = dest;
+    while (true) {
+        if (cap == 0) return 0;
+        u8 digit = integer % 10;
+        integer /= 10;
+        *dest = '0' + digit;
+        dest++; cap--;
+        if (integer == 0) break;
+    }
+
+    address len = dest - before;
+    for (address i = 0; 2 * i < len; i++) {
+        address j = len - 1 - i;
+        u8 tmp = before[i];
+        before[i] = before[j];
+        before[j] = tmp;
+    }
+
+    return initial_cap - cap;
+}
+
+void str_format_args(u8 *dest, address cap, const u8 *fmt, va_list args);
+
+void str_format(u8 *dest, address cap, const u8 *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    str_format_args(dest, cap, fmt, args);
+}
+
+void str_format_args(u8 *dest, address cap, const u8 *fmt, va_list args) {
+    for (const u8 *ch = fmt; *ch && cap > 1; ch++) {
+        if (*ch != '%') {
+            *dest = *ch;
+            dest++; cap--;
+            continue;
+        }
+
+        ch++;
+
+        switch (*ch) {
+        case '\0': goto end;
+        case 'i': {
+            address delta = str_write_signed(dest, cap - 1, va_arg(args, i32));
+            if (delta == 0) {
+                *dest = '^';
+                goto end;
+            }
+            dest += delta;
+            cap -= delta;
+        } break;
+        default: {
+            *dest = '^';
+            dest++; cap--;
+        } break;
+        }
+    }
+
+end:
+    // assert(cap >= 1);
+    *dest = '\0';
+    dest++; cap--;
+}
+
+void idt_handler(isr_Registers *registers) {
+    vga_Color on_red = vga_Color_bg_red | vga_Color_fg_white;
+    vga_clear(on_red);
+    vga_write_(2, 1, "RED DEATH SCREEN", on_red);
+
+    u8 report[128];
+    str_format(report, 128, "Interrupt: %i, error code: %i", registers->int_no, registers->err_code);
+    vga_write_(2, 2, report, on_red);
+
+    if (registers->int_no < LEN(_idt_interrupt_descriptions)) {
+        const u8 *description = _idt_interrupt_descriptions[registers->int_no];
+        vga_write_(2, 3, description, on_red);
+    }
+
+    vga_write_(2, VGA_VIDEO_MEMORY_H - 2, "Press [Enter] to reboot...", on_red);
 
     while (kb_read() != '\n');
     power_reboot();

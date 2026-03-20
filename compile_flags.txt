@@ -5,3 +5,4 @@
 -fno-builtin
 -Wall
 -Isrc
+-Wno-pointer-sign
