@@ -1,11 +1,12 @@
 -xc
 -std=c17
 -m32
+-Wall
+-Wextra
+-Wno-pointer-sign
+-Isrc
+-Iinclude
 -ffreestanding
 -fno-builtin
 -fno-pie
 -nostdinc
--Wall
--Isrc
--Iinclude
--Wno-pointer-sign

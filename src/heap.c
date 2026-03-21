@@ -23,6 +23,7 @@ void heap_init() {
 }
 
 void _heap_free_raw(void *payload, void *base) {
+    (void)payload;
     if (base == 0) return;
 
     heap_Record *record = (heap_Record *)(base - sizeof(heap_Record));

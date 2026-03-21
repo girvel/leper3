@@ -31,15 +31,18 @@ void _echo(StringArray args) {
 }
 
 void _clear(StringArray args) {
+    (void)args;
     tty_clear();
 }
 
 void _date(StringArray args) {
+    (void)args;
     Time time = clock_read();
     tty_writef(literal("%t"), &time);
 }
 
 void _reboot(StringArray args) {
+    (void)args;
     power_reboot();
 }
 
@@ -169,6 +172,7 @@ void _game_of_life(StringArray args) {
 }
 
 void _calibrate(StringArray args) {
+    (void)args;
     tty_write(literal("Press [Enter] after 10 seconds"));
     u32 frame = clock_frame();
     while (kb_read() != '\n');
@@ -206,6 +210,7 @@ cmd_Entry cmd_entries_base[10] = {
 cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 10};
 
 void _help(StringArray args) {
+    (void)args;
     enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {
         if (i > 0) tty_write(literal("\n"));
         tty_write(literal("- "));

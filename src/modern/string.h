@@ -62,7 +62,7 @@ StringArray string_split(String target, Allocator *allocator, u8 separator) {
 
     enumerate (address, i, u8 *, character, &target) {
         bool push = false;
-        if (*character == ' ') {
+        if (*character == separator) {
             push = true;
         } else {
             append(&current_word, allocator, *character);
