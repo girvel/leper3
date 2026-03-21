@@ -1,6 +1,4 @@
-#include "modern/integer.h"
-#include "modern/memory.h"
-#include <stdarg.h>
+#include "string.h"
 
 address str_write_signed(u8 *dest, address cap, i32 integer) {
     address initial_cap = cap;
@@ -32,8 +30,6 @@ address str_write_signed(u8 *dest, address cap, i32 integer) {
 
     return initial_cap - cap;
 }
-
-void str_format_args(u8 *dest, address cap, const u8 *fmt, va_list args);
 
 void str_format(u8 *dest, address cap, const u8 *fmt, ...) {
     va_list args;

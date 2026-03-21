@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "modern/integer.h"
+#include "string.h"
+#include "primitives.h"
 #include "vga.c"
 #include "kb.c"
 #include "power.c"

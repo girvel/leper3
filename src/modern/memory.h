@@ -3,8 +3,6 @@
 #include "integer.h"
 #include "macros.h"
 
-typedef u32 address;
-
 typedef struct {
     void *base;
     address length;

@@ -7,7 +7,6 @@ int entrypoint() {
     return 0;
 }
 
-#include "string.c"
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"

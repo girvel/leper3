@@ -14,11 +14,32 @@ local cmd = function(cmd, ...)
   end
 end
 
+--- @param filename string
+--- @return string
+local read_file = function(filename)
+  local f = assert(io.open(filename, "rb"))
+  local result = f:read("*a")
+  f:close()
+  return result
+end
+
+local cc_flags = read_file("compile_flags.txt"):gsub("\n", " ")
+
+--- @param source string
+--- @return string destination
+local cc = function(source)
+  assert(source:sub(-2) == ".c")
+  local destination = source:sub(1, -2) .. "o"
+  cmd("gcc %s -c src/%s -o .build/%s", cc_flags, source, destination)
+  return destination
+end
+
 cmd("mkdir -p .build")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")
 cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
-cmd("gcc -ffreestanding -m32 -fno-pie -c src/kernel.c -o .build/kernel.o")
-cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/isr.o")
+cc("kernel.c")
+cc("string.c")
+cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/string.o .build/isr.o")
 
 do
   local SECTOR_SIZE = 512

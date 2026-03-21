@@ -3,6 +3,9 @@
 -m32
 -ffreestanding
 -fno-builtin
+-fno-pie
+-nostdinc
 -Wall
 -Isrc
+-Iinclude
 -Wno-pointer-sign
