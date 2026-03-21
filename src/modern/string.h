@@ -1,10 +1,9 @@
 #pragma once
 
-#include "integer.h"
 #include "memory.h"
 #include "allocator.h"
 #include "time.h"
-#include <stdarg.h>
+#include "varargs.h"
 
 typedef struct {
     u8 *base;

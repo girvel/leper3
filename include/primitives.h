@@ -1,6 +1,6 @@
 #pragma once
-#include "stdbool.h"
-#include "stdint.h"
+#include "inner/stdbool.h"
+#include "inner/stdint.h"
 
 typedef uint8_t  u8;
 typedef uint16_t u16;
