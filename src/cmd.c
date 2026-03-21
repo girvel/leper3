@@ -5,7 +5,7 @@
 #include "heap.c"
 #include "clock.h"
 #include "power.h"
-#include "random.c"
+#include "random.h"
 #include "vga.c"
 
 void _split(StringArray args) {
