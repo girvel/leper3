@@ -39,7 +39,8 @@ cmd("nasm -f bin boot.asm -o .build/boot.bin")
 cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
 cc("kernel.c")
 cc("string.c")
-cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/string.o .build/isr.o")
+cc("io.c")
+cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/string.o .build/io.o .build/isr.o")
 
 do
   local SECTOR_SIZE = 512

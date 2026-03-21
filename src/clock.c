@@ -1,7 +1,7 @@
 #pragma once
 
 #include "modern/time.h"
-#include "io.c"
+#include "io.h"
 
 u8 _clock_read(u8 reg) {
     io_write_byte(0x70, reg);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "io.c"
+#include "io.h"
 
 void power_reboot() {
     while (io_read_byte(0x64) & 0x02);

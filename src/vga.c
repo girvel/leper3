@@ -2,7 +2,7 @@
 
 #include "modern/integer.h"
 #include "modern/string.h"
-#include "io.c"
+#include "io.h"
 
 typedef struct __attribute__((packed)) {
     u8 character;
