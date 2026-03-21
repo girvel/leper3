@@ -25,23 +25,27 @@ end
 
 local cc_flags = read_file("compile_flags.txt"):gsub("\n", " ")
 
---- @param source string
+--- @param source string name without src/ and .c
 --- @return string destination
 local cc = function(source)
-  assert(source:sub(-2) == ".c")
-  local destination = source:sub(1, -2) .. "o"
-  cmd("gcc %s -c src/%s -o .build/%s", cc_flags, source, destination)
+  local destination = ".build/" .. source .. ".o"
+  cmd("gcc %s -c src/%s.c -o %s", cc_flags, source, destination)
   return destination
 end
+
+local SOURCES = {"kernel", "string", "io", "clock"}
 
 cmd("mkdir -p .build")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")
 cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
-cc("kernel.c")
-cc("string.c")
-cc("io.c")
-cc("clock.c")
-cmd("ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 .build/kernel.o .build/string.o .build/io.o .build/clock.o .build/isr.o")
+local objects = ""
+for _, name in ipairs(SOURCES) do
+  objects = objects .. " " .. cc(name)
+end
+cmd(
+  "ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 %s .build/isr.o",
+  objects
+)
 
 do
   local SECTOR_SIZE = 512
