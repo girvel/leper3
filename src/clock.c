@@ -1,9 +1,7 @@
-#pragma once
-
-#include "modern/time.h"
+#include "clock.h"
 #include "io.h"
 
-u8 _clock_read(u8 reg) {
+static u8 clock_read_byte(u8 reg) {
     io_write_byte(0x70, reg);
     u8 bcd = io_read_byte(0x71);
     u8 result = (bcd % 0x10)
@@ -11,14 +9,14 @@ u8 _clock_read(u8 reg) {
     return result;
 }
 
-Time clock_read() {
-    return (Time) {
-        _clock_read(0x00),
-        _clock_read(0x02),
-        (_clock_read(0x04) + 5) % 24,
-        _clock_read(0x07),
-        _clock_read(0x08),
-        _clock_read(0x09)
+clock_Time clock_read() {
+    return (clock_Time) {
+        clock_read_byte(0x00),
+        clock_read_byte(0x02),
+        (clock_read_byte(0x04) + 5) % 24,
+        clock_read_byte(0x07),
+        clock_read_byte(0x08),
+        clock_read_byte(0x09)
     };
 }
 

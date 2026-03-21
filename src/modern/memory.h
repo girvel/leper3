@@ -1,6 +1,6 @@
 #pragma once
 
-#include "integer.h"
+#include "primitives.h"
 #include "macros.h"
 
 typedef struct {

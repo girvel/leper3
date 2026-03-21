@@ -10,7 +10,7 @@ int entrypoint() {
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"
-#include "clock.c"
+#include "clock.h"
 #include "idt.c"
 #include "vmm.c"
 #include "modern/string.h"
@@ -27,7 +27,7 @@ void main() {
     tty_clear();
 
     tty_write(literal("\nWelcome to Leper OS!\n"));
-    Time t = clock_read();
+    clock_Time t = clock_read();
     tty_writef(literal("Today is %t"), &t);
     tty_write(literal("\n"));
 

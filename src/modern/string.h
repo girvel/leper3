@@ -2,7 +2,7 @@
 
 #include "memory.h"
 #include "allocator.h"
-#include "time.h"
+#include "clock.h"
 #include "varargs.h"
 
 typedef struct {
@@ -136,7 +136,7 @@ void string_format_args(DynamicString *target, Allocator *allocator, String form
             } else if (*character == 'i') {
                 string_write_signed(target, allocator, va_arg(args, i32));
             } else if (*character == 't') {
-                Time *time = va_arg(args, Time*);
+                clock_Time *time = va_arg(args, clock_Time*);
                 string_format(
                     target, allocator, literal("20%02i-%02i-%02i %02i:%02i:%02i"),
                     time->year, time->month, time->day, time->hours, time->minutes, time->seconds

@@ -3,7 +3,7 @@
 #include "modern/string.h"
 #include "tty.c"
 #include "heap.c"
-#include "clock.c"
+#include "clock.h"
 #include "power.c"
 #include "random.c"
 #include "vga.c"
@@ -37,7 +37,7 @@ void _clear(StringArray args) {
 
 void _date(StringArray args) {
     (void)args;
-    Time time = clock_read();
+    clock_Time time = clock_read();
     tty_writef(literal("%t"), &time);
 }
 
