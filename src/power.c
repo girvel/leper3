@@ -1,5 +1,4 @@
-#pragma once
-
+#include "power.h"
 #include "io.h"
 
 void power_reboot() {

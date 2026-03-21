@@ -16,7 +16,7 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 - [ ] string.c
 - [x] io.c
 - [x] clock.c
-- [ ] kb.c
+- [x] kb.c
 - [ ] power.c
 - [ ] random.c
 - [ ] kernel.c

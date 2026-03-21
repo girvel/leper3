@@ -6,7 +6,7 @@
 #include "primitives.h"
 #include "vga.c"
 #include "kb.h"
-#include "power.c"
+#include "power.h"
 
 typedef struct {
     u16 offset_low;  // Lower 16 bits of the function address

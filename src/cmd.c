@@ -4,7 +4,7 @@
 #include "tty.c"
 #include "heap.c"
 #include "clock.h"
-#include "power.c"
+#include "power.h"
 #include "random.c"
 #include "vga.c"
 
