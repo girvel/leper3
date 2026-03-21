@@ -10,20 +10,19 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 - Maybe nob-based build system, or even better -- a CLI app
 - Exported api folder
 
-### Stage 1: remove "modern", split into .c and .h, document
-
 - [x] idt.c
 - [x] io.c
 - [x] clock.c
 - [x] kb.c
 - [x] power.c
 - [x] random.c
+- [ ] allow bigger kernel
+- [ ] vmm.c
+- [ ] remove: arena, fs, heap, page, tar, tty;
+- [ ] vga.c: redo, split & document
+- [ ] a simple userspace app to link with kernel
 - [ ] string.c
-- [ ] kernel.c
-
-### Stage 2: restructure the project
 
 - [ ] Remove allocators & "modern"
-- [ ] Separate the user application from the kernel
 - [ ] Make the CLI
 
