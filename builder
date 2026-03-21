@@ -25,12 +25,10 @@ end
 
 local cc_flags = read_file("compile_flags.txt"):gsub("\n", " ")
 
---- @param source string name without src/ and .c
---- @return string destination
-local cc = function(source)
-  local destination = ".build/" .. source .. ".o"
-  cmd("gcc %s -c src/%s.c -o %s", cc_flags, source, destination)
-  return destination
+--- @param source string
+--- @param destination string
+local cc = function(source, destination)
+  cmd("gcc %s -c %s -o %s", cc_flags, source, destination)
 end
 
 local SOURCES = {"kernel", "string", "io", "clock", "kb", "power", "random"}
@@ -40,7 +38,10 @@ cmd("nasm -f bin boot.asm -o .build/boot.bin")
 cmd("nasm -f elf32 src/isr.asm -o .build/isr.o")
 local objects = ""
 for _, name in ipairs(SOURCES) do
-  objects = objects .. " " .. cc(name)
+  local source = "src/" .. name .. ".c"
+  local destination = ".build/" .. name .. ".o"
+  cc(source, destination)
+  objects = objects .. " " .. destination
 end
 cmd(
   "ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 %s .build/isr.o",
