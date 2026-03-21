@@ -33,7 +33,7 @@ local cc = function(source)
   return destination
 end
 
-local SOURCES = {"kernel", "string", "io", "clock"}
+local SOURCES = {"kernel", "string", "io", "clock", "kb"}
 
 cmd("mkdir -p .build")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")

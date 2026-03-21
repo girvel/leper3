@@ -1,34 +1,22 @@
-#pragma once
-
-#include "modern/string.h"
+#include "kb.h"
 #include "io.h"
-#include "modern/memory.h"
-
 
 #define KB_DATA_PORT 0x60
 #define KB_STATUS_PORT 0x64
 
-def_region(String, kb_scancode_map, {
+static const char kb_scancode_map[] = {
     0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
     '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
     0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0, '\\',
     'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' ', 0
-});
+};
 
-def_region(String, kb_shift_scancode_map, {
+static const char kb_shift_scancode_map[] = {
     0, 27, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b',
     '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',
     0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '|', '~', 0, '\\',
     'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, ' ', 0
-});
-
-typedef enum {
-    kb_Key_up = 128,
-    kb_Key_down = 129,
-    kb_Key_left = 130,
-    kb_Key_right = 131,
-} kb_Key;
-
+};
 
 typedef enum {
     kb_Scancode_lshift = 0x2A,
@@ -36,7 +24,7 @@ typedef enum {
     kb_Scancode_release = 0x80,
 } kb_Scancode;
 
-u8 kb_read_scancode() {
+static u8 kb_read_scancode() {
     if (io_read_byte(KB_STATUS_PORT) & 0x01) {
         return io_read_byte(KB_DATA_PORT);
     }
@@ -76,7 +64,10 @@ u8 kb_read() {
             return 0;
     }
 
-    u8 *key = at(_kb_shift ? kb_shift_scancode_map : kb_scancode_map, scancode);
-    return key ? *key : 0;
+    if (_kb_shift) {
+        return scancode < LEN(kb_shift_scancode_map) ? kb_shift_scancode_map[scancode] : 0;
+    } else {
+        return scancode < LEN(kb_scancode_map) ? kb_scancode_map[scancode] : 0;
+    }
 }
 

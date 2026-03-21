@@ -5,7 +5,7 @@
 #include "string.h"
 #include "primitives.h"
 #include "vga.c"
-#include "kb.c"
+#include "kb.h"
 #include "power.c"
 
 typedef struct {
@@ -63,8 +63,6 @@ void idt_init() {
 
     __asm__ volatile("lidt %0" : : "m"(idt_ptr));
 }
-
-#define LEN(X) sizeof(X) / sizeof(*X)
 
 static const char *_idt_interrupt_descriptions[] = {
     "Division by zero",

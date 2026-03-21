@@ -5,17 +5,17 @@
 Leper OS as a playground for C or C++ development, basically a microkernel that gets you NULL, graphics, keyboard & direct access to memory.
 
 - No "modern"
+- Do the .c/.h split
 - No allocators, no pages, rawdogging stack
 - Maybe nob-based build system, or even better -- a CLI app
-- Do the .c/.h split
 - Exported api folder
 
-### Stage 1: remove "modern" from all the modules
+### Stage 1: remove "modern", split into .c and .h, document
 
 - [x] idt.c
 - [ ] string.c
-- [ ] io.c
-- [ ] clock.c
+- [x] io.c
+- [x] clock.c
 - [ ] kb.c
 - [ ] power.c
 - [ ] random.c
@@ -23,7 +23,7 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 
 ### Stage 2: restructure the project
 
-- [ ] Do the .c/.h split
+- [ ] Remove allocators & "modern"
 - [ ] Separate the user application from the kernel
 - [ ] Make the CLI
 

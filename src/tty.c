@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vga.c"
-#include "kb.c"
+#include "kb.h"
 #include "modern/integer.h"
 #include "heap.c"
 
