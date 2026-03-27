@@ -2,11 +2,8 @@
 
 #pragma once
 
-#include "string.h"
-#include "primitives.h"
+#include "leper3.h"
 #include "vga.c"
-#include "kb.h"
-#include "power.h"
 
 typedef struct {
     u16 offset_low;  // Lower 16 bits of the function address
@@ -53,7 +50,7 @@ extern void isr14();
 
 void idt_init() {
     idt_ptr.limit = sizeof(idt_Entry) * 256 - 1;
-    idt_ptr.base = (address)&idt;
+    idt_ptr.base = (usize)&idt;
 
     _idt_set_gate(0, (u32)isr0, 0x08, 0x8E);
     _idt_set_gate(6, (u32)isr6, 0x08, 0x8E);

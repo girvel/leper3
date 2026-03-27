@@ -4,14 +4,14 @@
 
 typedef struct {
     void *payload;
-    void *(*allocate_raw)(void *payload, void *prev, address length);
+    void *(*allocate_raw)(void *payload, void *prev, usize length);
     void (*free_raw)(void *payload, void *base);
 } Allocator;
 
 #define allocate(TYPE, ALLOCATOR, PREV, LENGTH) ({ \
     __typeof__ (ALLOCATOR) __allocator = (ALLOCATOR); \
     void *__prev = (PREV).base; \
-    address __length = (LENGTH); \
+    usize __length = (LENGTH); \
     TYPE __result = {.length = __length}; \
     __result.base = __allocator->allocate_raw( \
         __allocator->payload, __prev, __length * sizeof(__result.base[0]) \
@@ -42,7 +42,7 @@ typedef struct {
 #define extend(FATTER, ALLOCATOR, LENGTH) do { \
     __typeof__ (FATTER) extend__fatter = (FATTER); \
     __typeof__ (LENGTH) extend__length = (LENGTH); \
-    address new_length = extend__fatter->length == 0 ? 16 : extend__fatter->length * 2; \
+    usize new_length = extend__fatter->length == 0 ? 16 : extend__fatter->length * 2; \
     while (extend__fatter->size + extend__length > new_length) new_length *= 2; \
     extend_exact(extend__fatter, (ALLOCATOR), new_length); \
 } while (0)

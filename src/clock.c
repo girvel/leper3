@@ -1,5 +1,4 @@
-#include "clock.h"
-#include "io.h"
+#include "leper3.h"
 
 static u8 clock_read_byte(u8 reg) {
     io_write_byte(0x70, reg);

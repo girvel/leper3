@@ -7,11 +7,10 @@ int entrypoint() {
     return 0;
 }
 
-#include "page.h"
+#include "leper3.h"
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"
-#include "clock.h"
 #include "idt.c"
 #include "vmm.c"
 #include "modern/string.h"

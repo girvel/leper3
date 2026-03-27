@@ -1,7 +1,7 @@
-#include "string.h"
+#include "leper3.h"
 
-address str_write_signed(u8 *dest, address cap, i32 integer) {
-    address initial_cap = cap;
+usize str_write_signed(u8 *dest, usize cap, i32 integer) {
+    usize initial_cap = cap;
     if (cap < 2) return 0;
 
     if (integer < 0) {
@@ -20,9 +20,9 @@ address str_write_signed(u8 *dest, address cap, i32 integer) {
         if (integer == 0) break;
     }
 
-    address len = dest - before;
-    for (address i = 0; 2 * i < len; i++) {
-        address j = len - 1 - i;
+    usize len = dest - before;
+    for (usize i = 0; 2 * i < len; i++) {
+        usize j = len - 1 - i;
         u8 tmp = before[i];
         before[i] = before[j];
         before[j] = tmp;
@@ -31,13 +31,13 @@ address str_write_signed(u8 *dest, address cap, i32 integer) {
     return initial_cap - cap;
 }
 
-void str_format(u8 *dest, address cap, const u8 *fmt, ...) {
+void str_format(u8 *dest, usize cap, const u8 *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     str_format_args(dest, cap, fmt, args);
 }
 
-void str_format_args(u8 *dest, address cap, const u8 *fmt, va_list args) {
+void str_format_args(u8 *dest, usize cap, const u8 *fmt, va_list args) {
     for (const u8 *ch = fmt; *ch && cap > 1; ch++) {
         if (*ch != '%') {
             *dest = *ch;
@@ -50,7 +50,7 @@ void str_format_args(u8 *dest, address cap, const u8 *fmt, va_list args) {
         switch (*ch) {
         case '\0': goto end;
         case 'i': {
-            address delta = str_write_signed(dest, cap - 1, va_arg(args, i32));
+            usize delta = str_write_signed(dest, cap - 1, va_arg(args, i32));
             if (delta == 0) {
                 *dest = '^';
                 goto end;

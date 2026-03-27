@@ -2,7 +2,7 @@
 
 #include "modern/integer.h"
 #include "modern/string.h"
-#include "io.h"
+#include "leper3.h"
 
 typedef struct __attribute__((packed)) {
     u8 character;
@@ -96,7 +96,7 @@ void vga_write(u8_2 position, String str, vga_Color color) {
 void vga_clear(vga_Color color) {
     vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
 
-    for (address i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {
+    for (usize i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {
         video_memory[i] = (vga_Cell) {.character = ' ', .color = color};
     }
 }

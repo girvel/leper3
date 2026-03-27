@@ -1,11 +1,10 @@
 #pragma once
 
 #include "modern/allocator.h"
-#include "page.h"
-#include "primitives.h"
+#include "leper3.h"
 
 typedef struct heap_Record {
-    address size;
+    usize size;
     bool is_free;
     struct heap_Record *next;
 } heap_Record;
@@ -31,7 +30,7 @@ void _heap_free_raw(void *payload, void *base) {
     }
 }
 
-void *_heap_allocate_raw(void *payload, void *prev, address length) {
+void *_heap_allocate_raw(void *payload, void *prev, usize length) {
     _heap_free_raw(payload, prev);
 
     for (heap_Record *current = heap; current != 0; current = current->next) {

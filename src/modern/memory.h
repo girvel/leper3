@@ -1,18 +1,18 @@
 #pragma once
 
-#include "primitives.h"
+#include "leper3.h"
 #include "macros.h"
 
 typedef struct {
     void *base;
-    address length;
+    usize length;
 } Fat;
 
 #define null ((Fat) {0})
 #define is_null(X) ((X).base == 0)
 
-#define array(TYPE) struct { TYPE *base; address length; }
-#define list(TYPE) struct { TYPE *base; address length; address size; }
+#define array(TYPE) struct { TYPE *base; usize length; }
+#define list(TYPE) struct { TYPE *base; usize length; usize size; }
 
 #define def_region(TYPE, NAME, ...) \
     __typeof__ (*((TYPE) {}).base) concat3(_, NAME, _base)[] = __VA_ARGS__; \
@@ -54,10 +54,10 @@ typedef struct {
     }; \
 })
 
-void copy_raw(void *source, void *destination, address length) {
+void copy_raw(void *source, void *destination, usize length) {
     u8 *_source = source;
     u8 *_destination = destination;
-    for (address i = 0; i < length; i++) {
+    for (usize i = 0; i < length; i++) {
         _destination[i] = _source[i];
     }
 }
@@ -65,7 +65,7 @@ void copy_raw(void *source, void *destination, address length) {
 #define copy(SOURCE, DESTINATION) do { \
     __typeof__ (SOURCE) __source = (SOURCE); \
     __typeof__ (DESTINATION) __destination = (DESTINATION); \
-    for (address i = 0; i < MIN2(__source.length, __destination.length); i++) { \
+    for (usize i = 0; i < MIN2(__source.length, __destination.length); i++) { \
         __destination.base[i] = __source.base[i]; \
     } \
 } while (0)

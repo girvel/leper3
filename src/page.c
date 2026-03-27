@@ -1,5 +1,4 @@
-#include "page.h"
-#include "primitives.h"
+#include "leper3.h"
 
 static u8 page_bitmap[PAGE_PAGES / 8];
 
@@ -23,8 +22,8 @@ void *page_allocate() {
 }
 
 void page_free(void *page) {
-    address bit_total = ((address) page - PAGE_BASE) / PAGE_SIZE;
-    address byte = bit_total / 8;
+    usize bit_total = ((usize) page - PAGE_BASE) / PAGE_SIZE;
+    usize byte = bit_total / 8;
     u8 bit = bit_total % 8;
     page_bitmap[byte] &= ~(1 << bit);
 }

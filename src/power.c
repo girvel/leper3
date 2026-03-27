@@ -1,5 +1,4 @@
-#include "power.h"
-#include "io.h"
+#include "leper3.h"
 
 void power_reboot() {
     while (io_read_byte(0x64) & 0x02);

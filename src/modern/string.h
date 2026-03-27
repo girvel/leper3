@@ -1,30 +1,29 @@
 #pragma once
 
+#include "leper3.h"
 #include "memory.h"
 #include "allocator.h"
-#include "clock.h"
-#include "varargs.h"
 
 typedef struct {
     u8 *base;
-    address length;
+    usize length;
 } String;
 
 typedef struct {
     u8 *base;
-    address length;
-    address size;
+    usize length;
+    usize size;
 } DynamicString;
 
 typedef struct {
     String *base;
-    address length;
-    address size;
+    usize length;
+    usize size;
 } Strings;
 
 typedef struct {
     String *base;
-    address length;
+    usize length;
 } StringArray;
 
 #define literal(C_STRING) ((String) {.base = (u8 *)(C_STRING), .length = sizeof((C_STRING)) - 1})
@@ -32,13 +31,13 @@ typedef struct {
 // TODO these all can be memory macros
 bool string_equal(String a, String b) {
     if (a.length != b.length) return false;
-    for (address i = 0; i < a.length; i++) {
+    for (usize i = 0; i < a.length; i++) {
         if (a.base[i] != b.base[i]) return false;
     }
     return true;
 }
 
-String string_sub(String a, address start, address end) {
+String string_sub(String a, usize start, usize end) {
     if (end <= start) {
         return (String) {0};
     }
@@ -60,7 +59,7 @@ StringArray string_split(String target, Allocator *allocator, u8 separator) {
     Strings result = {0};
     DynamicString current_word = {0};
 
-    enumerate (address, i, u8 *, character, &target) {
+    enumerate (usize, i, u8 *, character, &target) {
         bool push = false;
         if (*character == separator) {
             push = true;
@@ -84,7 +83,7 @@ void string_write_signed(DynamicString *target, Allocator *allocator, i32 intege
         append(target, allocator, '-');
         integer *= -1;
     }
-    address start = target->size;
+    usize start = target->size;
 
     do {
         u8 n = integer % 10;
@@ -92,8 +91,8 @@ void string_write_signed(DynamicString *target, Allocator *allocator, i32 intege
         append(target, allocator, _string_digits[n]);
     } while (integer != 0);
 
-    for (address i = start; i < (start + target->size) / 2; i++) {
-        address j = target->size - 1 - i + start;
+    for (usize i = start; i < (start + target->size) / 2; i++) {
+        usize j = target->size - 1 - i + start;
         u8 tmp = target->base[i];
         target->base[i] = target->base[j];
         target->base[j] = tmp;
@@ -155,13 +154,13 @@ void string_format_args(DynamicString *target, Allocator *allocator, String form
                     character++;
                 } while (*character != 'i');
 
-                address size_before = target->size;
+                usize size_before = target->size;
                 string_write_signed(target, allocator, va_arg(args, i32));
                 padding -= target->size - size_before;
 
                 extend(target, allocator, padding);
                 target->size += padding;
-                for (address i = size_before; i < size_before + padding; i++) {
+                for (usize i = size_before; i < size_before + padding; i++) {
                     target->base[i + padding] = target->base[i];
                     target->base[i] = '0';
                 }

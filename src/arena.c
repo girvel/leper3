@@ -3,11 +3,11 @@
 
 typedef struct {
     void *base;
-    address length;
-    address size;
+    usize length;
+    usize size;
 } Arena;
 
-void *_arena_allocate_raw(void *payload, void *prev, address length) {
+void *_arena_allocate_raw(void *payload, void *prev, usize length) {
     Arena *self = payload;
     if (self->size + length > self->length) {
         return 0;

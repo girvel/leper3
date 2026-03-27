@@ -3,9 +3,7 @@
 #include "modern/string.h"
 #include "tty.c"
 #include "heap.c"
-#include "clock.h"
-#include "power.h"
-#include "random.h"
+#include "leper3.h"
 #include "vga.c"
 
 void _split(StringArray args) {
@@ -13,7 +11,7 @@ void _split(StringArray args) {
     words.base++;
     words.length--;
 
-    enumerate (address, i, String *, word, &words) {
+    enumerate (usize, i, String *, word, &words) {
         if (i > 0) tty_write(literal("\n"));
         tty_write(*word);
     }
@@ -24,7 +22,7 @@ void _echo(StringArray args) {
     words.base++;
     words.length--;
 
-    enumerate(address, i, String *, word, &words) {
+    enumerate(usize, i, String *, word, &words) {
         if (i > 0) tty_write(literal(" "));
         tty_write(*word);
     }
@@ -191,7 +189,7 @@ typedef struct {
 
 typedef struct {
     cmd_Entry *base;
-    address length;
+    usize length;
 } cmd_Entries;
 
 cmd_Entry cmd_entries_base[10] = {
@@ -211,7 +209,7 @@ cmd_Entries cmd_entries = {.base = cmd_entries_base, .length = 10};
 
 void _help(StringArray args) {
     (void)args;
-    enumerate (address, i, cmd_Entry *, entry, &cmd_entries) {
+    enumerate (usize, i, cmd_Entry *, entry, &cmd_entries) {
         if (i > 0) tty_write(literal("\n"));
         tty_write(literal("- "));
         tty_write(entry->name);

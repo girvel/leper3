@@ -1,5 +1,4 @@
-#include "kb.h"
-#include "io.h"
+#include "leper3.h"
 
 #define KB_DATA_PORT 0x60
 #define KB_STATUS_PORT 0x64
