@@ -1,9 +1,8 @@
 #pragma once
 
-#include "modern/integer.h"
-#include "modern/memory.h"
 #include "modern/allocator.h"
-#include "page.c"
+#include "page.h"
+#include "primitives.h"
 
 typedef struct heap_Record {
     address size;
@@ -11,13 +10,11 @@ typedef struct heap_Record {
     struct heap_Record *next;
 } heap_Record;
 
-Fat heap_memory;
 heap_Record *heap;
 
 void heap_init() {
-    heap_memory = page_allocate();
-    heap = heap_memory.base;
-    heap->size = heap_memory.length - sizeof(heap_Record);
+    heap = page_allocate();
+    heap->size = PAGE_SIZE - sizeof(heap_Record);
     heap->is_free = true;
     heap->next = 0;
 }

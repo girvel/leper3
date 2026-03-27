@@ -7,6 +7,7 @@ int entrypoint() {
     return 0;
 }
 
+#include "page.h"
 #include "tty.c"
 #include "heap.c"
 #include "cmd.c"
@@ -18,7 +19,7 @@ int entrypoint() {
 #include "modern/allocator.h"
 
 void main() {
-    page_init();
+    page_reset();
     idt_init();
     vmm_init();
     heap_init();

@@ -31,7 +31,7 @@ local cc = function(source, destination)
   cmd("gcc %s -c %s -o %s", cc_flags, source, destination)
 end
 
-local SOURCES = {"kernel", "string", "io", "clock", "kb", "power", "random"}
+local SOURCES = {"kernel", "string", "io", "clock", "kb", "power", "random", "page"}
 
 cmd("mkdir -p .build")
 cmd("nasm -f bin boot.asm -o .build/boot.bin")

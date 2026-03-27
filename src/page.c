@@ -1,45 +1,30 @@
-#pragma once
+#include "page.h"
+#include "primitives.h"
 
-#include "modern/integer.h"
-#include "modern/string.h"
-#include "modern/memory.h"
+static u8 page_bitmap[PAGE_PAGES / 8];
 
-#define PAGE_BASE 0x100000
-#define PAGE_LENGTH 4096
-#define PAGE_PAGES 256
-
-u8 page_bitmap_base[PAGE_PAGES / 8];
-String page_bitmap = {.base = page_bitmap_base, .length = PAGE_PAGES / 8};
-
-void page_init() {
-    foreach (u8 *, byte, &page_bitmap) {
+void page_reset() {
+    for (u8 *byte = page_bitmap; byte < page_bitmap + LEN(page_bitmap); byte++) {
         *byte = 0x00;
     }
 }
 
-Fat page_allocate() {
-    for (address i = 0; i < page_bitmap.length; i++) {
-        u8 *byte = page_bitmap.base + i;
-
+void *page_allocate() {
+    for (u8 *byte = page_bitmap; byte < page_bitmap + LEN(page_bitmap); byte++) {
         if (*byte == 0xFF) continue;
-
-        for (address bit = 0; bit < 8; bit++) {
-            if (!(*byte & (1 << bit))) {
-                *byte |= (1 << bit);
-                return (Fat) {
-                    .base = (u8 *)PAGE_BASE + (*byte * 8 + bit) * PAGE_LENGTH,
-                    .length = PAGE_LENGTH,
-                };
-            }
+        for (u8 bit = 0; bit < 8; bit++) {
+            u8 mask = 1 << bit;
+            if (*byte & mask) continue;
+            *byte |= mask;
+            return (void *)PAGE_BASE + (*byte * 8 + bit) * PAGE_SIZE;
         }
     }
-
-    return null;
+    return 0;
 }
 
-void page_free(Fat page) {
-    address bit_total = ((address) page.base - PAGE_BASE) / PAGE_LENGTH;
+void page_free(void *page) {
+    address bit_total = ((address) page - PAGE_BASE) / PAGE_SIZE;
     address byte = bit_total / 8;
     u8 bit = bit_total % 8;
-    page_bitmap.base[byte] &= ~(1 << bit);
+    page_bitmap[byte] &= ~(1 << bit);
 }
