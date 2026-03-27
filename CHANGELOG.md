@@ -19,7 +19,8 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 - [x] page.h
 - [x] Join all headers together
 - [x] Rename address -> usize
-- [ ] remove: arena, fs, heap, page, tar, tty;
+- [x] remove: arena, fs, tar;
+- [ ] remove heap
 - [ ] vga.c: redo, split & document
 - [ ] a simple userspace app to link with kernel
 - [ ] string.c

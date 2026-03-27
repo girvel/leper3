@@ -9,9 +9,9 @@ typedef struct __attribute__((packed)) {
     u8 color;
 } vga_Cell;
 
-#define VGA_VIDEO_MEMORY_ADDRESS 0xb8000
-#define VGA_VIDEO_MEMORY_W 80
-#define VGA_VIDEO_MEMORY_H 25
+#define VGA_CELL_ADDRESS 0xb8000
+#define VGA_CELL_W 80
+#define VGA_CELL_H 25
 
 typedef enum {
     vga_Color_fg_black = 0x0,
@@ -45,18 +45,18 @@ typedef enum {
 vga_Cell no_cell;
 
 vga_Cell *vga_cell(u8_2 position) {
-    if (position.x < VGA_VIDEO_MEMORY_W && position.y < VGA_VIDEO_MEMORY_H) {
-        vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
-        return video_memory + position.y * VGA_VIDEO_MEMORY_W + position.x;
+    if (position.x < VGA_CELL_W && position.y < VGA_CELL_H) {
+        vga_Cell *video_memory = (vga_Cell *)VGA_CELL_ADDRESS;
+        return video_memory + position.y * VGA_CELL_W + position.x;
     }
 
     return &no_cell;
 }
 
 vga_Cell *vga_cell_(u8 x, u8 y) {
-    if (x < VGA_VIDEO_MEMORY_W && y < VGA_VIDEO_MEMORY_H) {
-        vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
-        return video_memory + y * VGA_VIDEO_MEMORY_W + x;
+    if (x < VGA_CELL_W && y < VGA_CELL_H) {
+        vga_Cell *video_memory = (vga_Cell *)VGA_CELL_ADDRESS;
+        return video_memory + y * VGA_CELL_W + x;
     }
 
     return &no_cell;
@@ -94,15 +94,15 @@ void vga_write(u8_2 position, String str, vga_Color color) {
 }
 
 void vga_clear(vga_Color color) {
-    vga_Cell *video_memory = (vga_Cell *)VGA_VIDEO_MEMORY_ADDRESS;
+    vga_Cell *video_memory = (vga_Cell *)VGA_CELL_ADDRESS;
 
-    for (usize i = 0; i < VGA_VIDEO_MEMORY_W * VGA_VIDEO_MEMORY_H; i++) {
+    for (usize i = 0; i < VGA_CELL_W * VGA_CELL_H; i++) {
         video_memory[i] = (vga_Cell) {.character = ' ', .color = color};
     }
 }
 
 void vga_cursor_move(u8_2 pos) {
-    u16 index = pos.y * VGA_VIDEO_MEMORY_W + pos.x;
+    u16 index = pos.y * VGA_CELL_W + pos.x;
 
     // send low byte
     io_write_byte(0x3D4, 0x0F);

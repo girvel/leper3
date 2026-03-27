@@ -115,8 +115,8 @@ void _game_of_life(StringArray args) {
         delay = n;
     }
 
-    const u8 w = VGA_VIDEO_MEMORY_W;
-    const u8 h = VGA_VIDEO_MEMORY_H;
+    const u8 w = VGA_CELL_W;
+    const u8 h = VGA_CELL_H;
     const u8 alive = 0x07;
     const u8 dead = ' ';
 

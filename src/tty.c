@@ -12,20 +12,20 @@ u8_2 pos = {2, 1};
 void tty_clear() {
     vga_clear(terminal);
 
-    for (u8 x = 0; x < VGA_VIDEO_MEMORY_W; x++) {
-    for (u8 y = 0; y < VGA_VIDEO_MEMORY_H; y++) {
+    for (u8 x = 0; x < VGA_CELL_W; x++) {
+    for (u8 y = 0; y < VGA_CELL_H; y++) {
         vga_Cell *cell = vga_cell((u8_2) {x, y});
         if (x == 0) {
             if (y == 0) cell->character = 0xC9;
-            else if (y == VGA_VIDEO_MEMORY_H - 1) cell->character = 0xC8;
+            else if (y == VGA_CELL_H - 1) cell->character = 0xC8;
             else cell->character = 0xBA;
-        } else if (x == VGA_VIDEO_MEMORY_W - 1) {
+        } else if (x == VGA_CELL_W - 1) {
             if (y == 0) cell->character = 0xBB;
-            else if (y == VGA_VIDEO_MEMORY_H - 1) cell->character = 0xBC;
+            else if (y == VGA_CELL_H - 1) cell->character = 0xBC;
             else cell->character = 0xBA;
         } else {
             if (y == 0) cell->character = 0xCD;
-            else if (y == VGA_VIDEO_MEMORY_H - 1) cell->character = 0xCD;
+            else if (y == VGA_CELL_H - 1) cell->character = 0xCD;
             else cell->character = ' ';
         }
     }}
@@ -42,7 +42,7 @@ void tty_write(String str) {
             pos.y++;
         } else if (*character == '\b') {
             if (pos.x == 2) {
-                pos.x = VGA_VIDEO_MEMORY_W - 5;
+                pos.x = VGA_CELL_W - 5;
                 pos.y = MAX2(1, pos.y - 1);
             } else {
                 pos.x--;
@@ -51,7 +51,7 @@ void tty_write(String str) {
         } else {
             vga_cell(pos)->character = *character;
             pos.x++;
-            if (pos.x >= VGA_VIDEO_MEMORY_W - 4) {
+            if (pos.x >= VGA_CELL_W - 4) {
                 pos.x = 2;
                 pos.y++;
             }
