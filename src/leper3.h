@@ -1,26 +1,25 @@
 #pragma once
 #include "gcc/stdbool.h"  // IWYU pragma: keep
 #include "gcc/stdarg.h"  // IWYU pragma: keep
-#include "gcc/stdint.h"
 
 // -------------------------------------------------------------------------------------------------
 // [SECTION] Primitive types
 // -------------------------------------------------------------------------------------------------
 
-typedef uint8_t  u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
+typedef __UINT8_TYPE__  u8;
+typedef __UINT16_TYPE__ u16;
+typedef __UINT32_TYPE__ u32;
+typedef __UINT64_TYPE__ u64;
 
-typedef int8_t  i8;
-typedef int16_t i16;
-typedef int32_t i32;
-typedef int64_t i64;
+typedef __INT8_TYPE__  i8;
+typedef __INT16_TYPE__ i16;
+typedef __INT32_TYPE__ i32;
+typedef __INT64_TYPE__ i64;
 
 typedef u32 usize;
 typedef i64 isize;
 
-#define LEN(X) sizeof(X) / sizeof(*X)
+#define LEN(X) ((usize) (sizeof(X) / sizeof(*X)))
 
 // -------------------------------------------------------------------------------------------------
 // [SECTION] Input/Output
