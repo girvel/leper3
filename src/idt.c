@@ -79,7 +79,7 @@ static const char *_idt_interrupt_descriptions[] = {
 };
 
 void idt_handler(isr_Registers *registers) {
-    vga_Color on_red = vga_Color_bg_red | vga_Color_fg_white;
+    vga_Color on_red = vga_bg_red | vga_fg_white;
     vga_clear(on_red);
     vga_write(2, 1, "RED DEATH SCREEN", on_red);
 

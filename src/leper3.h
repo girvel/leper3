@@ -31,32 +31,32 @@ typedef struct __attribute__((packed)) {
 } vga_Cell;
 
 typedef enum {
-    vga_Color_fg_black = 0x0,
-    vga_Color_fg_blue = 0x1,
-    vga_Color_fg_green = 0x2,
-    vga_Color_fg_cyan = 0x3,
-    vga_Color_fg_red = 0x4,
-    vga_Color_fg_magenta = 0x5,
-    vga_Color_fg_brown = 0x6,
-    vga_Color_fg_light_gray = 0x7,
-    vga_Color_fg_dark_gray = 0x8,
-    vga_Color_fg_light_blue = 0x9,
-    vga_Color_fg_light_green = 0xa,
-    vga_Color_fg_light_cyan = 0xb,
-    vga_Color_fg_light_red = 0xc,
-    vga_Color_fg_light_magenta = 0xd,
-    vga_Color_fg_yellow = 0xe,
-    vga_Color_fg_white = 0xf,
-    vga_Color_bg_black = 0x00,
-    vga_Color_bg_blue = 0x10,
-    vga_Color_bg_green = 0x20,
-    vga_Color_bg_cyan = 0x30,
-    vga_Color_bg_red = 0x40,
-    vga_Color_bg_magenta = 0x50,
-    vga_Color_bg_brown = 0x60,
-    vga_Color_bg_light_gray = 0x70,
+    vga_fg_black = 0x0,
+    vga_fg_blue = 0x1,
+    vga_fg_green = 0x2,
+    vga_fg_cyan = 0x3,
+    vga_fg_red = 0x4,
+    vga_fg_magenta = 0x5,
+    vga_fg_brown = 0x6,
+    vga_fg_light_gray = 0x7,
+    vga_fg_dark_gray = 0x8,
+    vga_fg_light_blue = 0x9,
+    vga_fg_light_green = 0xa,
+    vga_fg_light_cyan = 0xb,
+    vga_fg_light_red = 0xc,
+    vga_fg_light_magenta = 0xd,
+    vga_fg_yellow = 0xe,
+    vga_fg_white = 0xf,
+    vga_bg_black = 0x00,
+    vga_bg_blue = 0x10,
+    vga_bg_green = 0x20,
+    vga_bg_cyan = 0x30,
+    vga_bg_red = 0x40,
+    vga_bg_magenta = 0x50,
+    vga_bg_brown = 0x60,
+    vga_bg_light_gray = 0x70,
 
-    vga_Color_blink = 0x80
+    vga_blink = 0x80
 } __attribute__((packed)) vga_Color;
 
 #define VGA_CELL_ADDRESS 0xb8000
@@ -82,10 +82,10 @@ void vga_cursor(bool enable);
 
 // Non-ASCII characters returned by kb_read()
 typedef enum {
-    kb_Key_up = 128,
-    kb_Key_down = 129,
-    kb_Key_left = 130,
-    kb_Key_right = 131,
+    kb_up = 128,
+    kb_down = 129,
+    kb_left = 130,
+    kb_right = 131,
 } kb_Key;
 
 // Reads current keyboard state; returns 0 if nothing's pressed, else a valid character or a kb_Key;
@@ -168,4 +168,3 @@ void str_format(u8 *dest, usize cap, const u8 *fmt, ...);
 
 // Format a string using va_list
 void str_format_args(u8 *dest, usize cap, const u8 *fmt, va_list args);
-

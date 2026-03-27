@@ -43,6 +43,7 @@ for _, name in ipairs(SOURCES) do
   cc(source, destination)
   objects = objects .. " " .. destination
 end
+cc("example/userspace.c", ".build/userspace.o");
 cmd(
   "ld -o .build/kernel.bin -Ttext 0x1000 -e main --oformat binary -m elf_i386 %s .build/isr.o",
   objects
