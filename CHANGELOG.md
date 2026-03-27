@@ -20,7 +20,9 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 - [x] Join all headers together
 - [x] Rename address -> usize
 - [x] remove: arena, fs, tar;
-- [ ] vga.h + remove old userspace
+- [x] vga.h + detach old userspace
+- [ ] remove unused files
+- [ ] consider changing enum member naming `<namespace>-<enum>-<name>` to `<namespace>-<name>` if it's the only enum in the namespace (or a main one)
 - [ ] a simple userspace app to link with kernel
 
 - [ ] remove heap

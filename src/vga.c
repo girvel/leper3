@@ -1,59 +1,8 @@
-#pragma once
-
-#include "modern/integer.h"
-#include "modern/string.h"
 #include "leper3.h"
-
-typedef struct __attribute__((packed)) {
-    u8 character;
-    u8 color;
-} vga_Cell;
-
-#define VGA_CELL_ADDRESS 0xb8000
-#define VGA_CELL_W 80
-#define VGA_CELL_H 25
-
-typedef enum {
-    vga_Color_fg_black = 0x0,
-    vga_Color_fg_blue = 0x1,
-    vga_Color_fg_green = 0x2,
-    vga_Color_fg_cyan = 0x3,
-    vga_Color_fg_red = 0x4,
-    vga_Color_fg_magenta = 0x5,
-    vga_Color_fg_brown = 0x6,
-    vga_Color_fg_light_gray = 0x7,
-    vga_Color_fg_dark_gray = 0x8,
-    vga_Color_fg_light_blue = 0x9,
-    vga_Color_fg_light_green = 0xa,
-    vga_Color_fg_light_cyan = 0xb,
-    vga_Color_fg_light_red = 0xc,
-    vga_Color_fg_light_magenta = 0xd,
-    vga_Color_fg_yellow = 0xe,
-    vga_Color_fg_white = 0xf,
-    vga_Color_bg_black = 0x00,
-    vga_Color_bg_blue = 0x10,
-    vga_Color_bg_green = 0x20,
-    vga_Color_bg_cyan = 0x30,
-    vga_Color_bg_red = 0x40,
-    vga_Color_bg_magenta = 0x50,
-    vga_Color_bg_brown = 0x60,
-    vga_Color_bg_light_gray = 0x70,
-
-    vga_Color_blink = 0x80
-} __attribute__((packed)) vga_Color;
 
 vga_Cell no_cell;
 
-vga_Cell *vga_cell(u8_2 position) {
-    if (position.x < VGA_CELL_W && position.y < VGA_CELL_H) {
-        vga_Cell *video_memory = (vga_Cell *)VGA_CELL_ADDRESS;
-        return video_memory + position.y * VGA_CELL_W + position.x;
-    }
-
-    return &no_cell;
-}
-
-vga_Cell *vga_cell_(u8 x, u8 y) {
+vga_Cell *vga_cell(u8 x, u8 y) {
     if (x < VGA_CELL_W && y < VGA_CELL_H) {
         vga_Cell *video_memory = (vga_Cell *)VGA_CELL_ADDRESS;
         return video_memory + y * VGA_CELL_W + x;
@@ -62,7 +11,7 @@ vga_Cell *vga_cell_(u8 x, u8 y) {
     return &no_cell;
 }
 
-void vga_write_(u8 x, u8 y, const u8 *str, vga_Color color) {
+void vga_write(u8 x, u8 y, const u8 *str, vga_Color color) {
     u8 current_x = x;
     u8 current_y = y;
     for (const u8 *ch = str; *ch; ch++) {
@@ -70,25 +19,10 @@ void vga_write_(u8 x, u8 y, const u8 *str, vga_Color color) {
             current_x = x;
             current_y++;
         } else {
-            vga_Cell *cell = vga_cell_(current_x, current_y);
+            vga_Cell *cell = vga_cell(current_x, current_y);
             cell->character = *ch;
             cell->color = color;
             current_x++;
-        }
-    }
-}
-
-void vga_write(u8_2 position, String str, vga_Color color) {
-    u8_2 current_position = position;
-    foreach (u8 *, character, &str) {
-        if (*character == '\n') {
-            current_position.x = position.x;
-            current_position.y++;
-        } else {
-            vga_Cell *cell = vga_cell(current_position);
-            cell->character = *character;
-            cell->color = color;
-            current_position.x++;
         }
     }
 }
@@ -101,8 +35,8 @@ void vga_clear(vga_Color color) {
     }
 }
 
-void vga_cursor_move(u8_2 pos) {
-    u16 index = pos.y * VGA_CELL_W + pos.x;
+void vga_cursor_move(u8 x, u8 y) {
+    u16 index = y * VGA_CELL_W + x;
 
     // send low byte
     io_write_byte(0x3D4, 0x0F);

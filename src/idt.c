@@ -3,7 +3,6 @@
 #pragma once
 
 #include "leper3.h"
-#include "vga.c"
 
 typedef struct {
     u16 offset_low;  // Lower 16 bits of the function address
@@ -82,18 +81,18 @@ static const char *_idt_interrupt_descriptions[] = {
 void idt_handler(isr_Registers *registers) {
     vga_Color on_red = vga_Color_bg_red | vga_Color_fg_white;
     vga_clear(on_red);
-    vga_write_(2, 1, "RED DEATH SCREEN", on_red);
+    vga_write(2, 1, "RED DEATH SCREEN", on_red);
 
     u8 report[128];
     str_format(report, 128, "Interrupt: %i, error code: %i", registers->int_no, registers->err_code);
-    vga_write_(2, 2, report, on_red);
+    vga_write(2, 2, report, on_red);
 
     if (registers->int_no < LEN(_idt_interrupt_descriptions)) {
         const u8 *description = _idt_interrupt_descriptions[registers->int_no];
-        vga_write_(2, 3, description, on_red);
+        vga_write(2, 3, description, on_red);
     }
 
-    vga_write_(2, VGA_CELL_H - 2, "Press [Enter] to reboot...", on_red);
+    vga_write(2, VGA_CELL_H - 2, "Press [Enter] to reboot...", on_red);
 
     while (kb_read() != '\n');
     power_reboot();
