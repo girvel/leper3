@@ -20,6 +20,7 @@ static const char kb_shift_scancode_map[] = {
 typedef enum {
     Scancode_lshift = 0x2A,
     Scancode_rshift = 0x46,
+    Scancode_arrow_magic = 0xE0,
     Scancode_release = 0x80,
 } Scancode;
 
@@ -32,17 +33,18 @@ static u8 kb_read_scancode() {
 
 static bool _kb_shift = false;
 
-u8 kb_read() {
+kb_Reading kb_read() {
+    kb_Reading result = {0};
     u8 scancode = kb_read_scancode();
 
-    if (scancode == 0xE0) {
+    if (scancode == Scancode_arrow_magic) {
         switch (kb_read_scancode()) {
-            case 0x48: return kb_down;
-            case 0x4B: return kb_left;
-            case 0x4D: return kb_right;
-            case 0x50: return kb_down;
-            default: return 0;
+            case 0x48: result.key = kb_up; break;
+            case 0x4B: result.key = kb_left; break;
+            case 0x4D: result.key = kb_right; break;
+            case 0x50: result.key = kb_down; break;
         }
+        return result;
     }
 
     if (scancode & Scancode_release) {
@@ -53,20 +55,25 @@ u8 kb_read() {
                 _kb_shift = false;
         }
 
-        return 0;
+        return result;
     }
 
     switch (scancode) {
         case Scancode_lshift:
         case Scancode_rshift:
             _kb_shift = true;
-            return 0;
+            result.key = kb_shift;
+            return result;
     }
 
     if (_kb_shift) {
-        return scancode < LEN(kb_shift_scancode_map) ? kb_shift_scancode_map[scancode] : 0;
+        result.character = scancode < LEN(kb_shift_scancode_map)
+            ? kb_shift_scancode_map[scancode] : 0;
     } else {
-        return scancode < LEN(kb_scancode_map) ? kb_scancode_map[scancode] : 0;
+        result.character = scancode < LEN(kb_scancode_map)
+            ? kb_scancode_map[scancode] : 0;
     }
+    result.key = result.character == 0 ? 0 : scancode;
+    return result;
 }
 

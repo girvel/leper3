@@ -59,7 +59,6 @@ typedef enum {
     vga_blink = 0x80
 } __attribute__((packed)) vga_Color;
 
-#define VGA_CELL_ADDRESS 0xb8000
 #define VGA_CELL_W 80
 #define VGA_CELL_H 25
 
@@ -86,11 +85,20 @@ typedef enum {
     kb_down = 129,
     kb_left = 130,
     kb_right = 131,
+    kb_shift = 132,
 } kb_Key;
+
+typedef struct {
+    // Physical keyboard key; is lowercase ASCII, kb_Key or 0
+    u8 key;
+
+    // Character representation for textual purposes; ASCII character or 0.
+    u8 character;
+} kb_Reading;
 
 // Reads current keyboard state; returns 0 if nothing's pressed, else a valid character or a kb_Key;
 // any kb_Key is >= 128.
-u8 kb_read();
+kb_Reading kb_read();
 
 // -------------------------------------------------------------------------------------------------
 // [SECTION] Input/Output

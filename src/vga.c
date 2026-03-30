@@ -1,5 +1,7 @@
 #include "leper3.h"
 
+#define VGA_CELL_ADDRESS 0xb8000
+
 vga_Cell no_cell;
 
 vga_Cell *vga_cell(u8 x, u8 y) {

@@ -25,11 +25,8 @@ Leper OS as a playground for C or C++ development, basically a microkernel that 
 - [x] Remove allocators & "modern"
 - [x] remove heap
 - [x] consider changing enum member naming `<namespace>-<enum>-<name>` to `<namespace>-<name>` if it's the only enum in the namespace (or a main one)
-- [ ] a simple userspace app to link with kernel
-
-- [ ] Make the CLI
-
+- [x] a simple userspace app to link with kernel
 - [ ] Redo kb
     Maybe split kb to kb_char and kb_key; one returns readable chars, modifies them with shift etc., the other one works with raw keys.
-
     Or maybe kb_read should return a struct, so kb_read().char is readable ASCII or 0, kb_read().key is lowercase ASCII, kb_Key or 0
+- [ ] Make the CLI

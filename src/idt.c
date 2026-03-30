@@ -94,6 +94,6 @@ void idt_handler(isr_Registers *registers) {
 
     vga_write(2, VGA_CELL_H - 2, "Press [Enter] to reboot...", on_red);
 
-    while (kb_read() != '\n');
+    while (kb_read().key != '\n');
     power_reboot();
 }
